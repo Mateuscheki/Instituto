@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title>Lista de Provas Disponíveis</title>
+</head>
+<body>
+<div th:replace="index :: sidebar"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <h2>Provas Disponíveis</h2>
+    </div>
+
+    <table class="table table-hover table-striped">
+        <thead class="table-header">
+        <tr>
+            <th>Título da Prova</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="prova : ${provas}">
+            <td th:text="${prova.titulo}">Título</td>
+            <td>
+                <div th:if="${!provasRespondidasIds.contains(prova.id)}">
+                    <a th:href="@{/responder/prova/{provaId}(provaId=${prova.id}, alunoId=${alunoId})}"
+                       class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-square me-1"></i> Responder Prova
+                    </a>
+                </div>
+                <div th:unless="${!provasRespondidasIds.contains(prova.id)}">
+                    <span class="badge bg-success">Prova já respondida</span>
+                </div>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(provas)}">
+            <td colspan="2" class="text-center">Nenhuma prova disponível.</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<script th:src="@{/js/sidebar-toggle.js}"></script>
+</body>
+</html>

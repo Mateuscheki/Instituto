@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Presença</title>
+  <!-- Link do Bootstrap adicionado para garantir o estilo -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+  <div class="mb-4">
+    <h3 class="mb-0 text-secondary fw-bold">Lista de Presença</h3>
+    <p class="text-muted mt-1">Desmarque a caixa de seleção para os alunos que estão <strong>ausentes</strong>.</p>
+  </div>
+
+  <div th:if="${param.sucesso}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+    <strong>Feito!</strong> As presenças foram atualizadas e salvas no banco de dados com sucesso.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center p-3">
+      <h5 class="mb-0 fw-normal">Chamada Nominal</h5>
+      <span class="badge bg-light text-dark px-3 py-2 rounded-pill fs-6 shadow-sm"
+            th:text="${chamada.turma.nome} + ' - ' + ${#temporals.format(chamada.data, 'dd/MM/yyyy')}">
+      </span>
+    </div>
+
+    <div class="card-body p-0">
+      <form th:action="@{/chamadas/{id}/presencas/salvar(id=${chamada.id})}" method="POST">
+
+        <table class="table table-hover table-striped align-middle mb-0">
+          <thead class="table-light">
+          <tr>
+            <th scope="col" class="py-3 text-center text-uppercase text-secondary" style="width: 15%; font-size: 0.85rem;">Presença</th>
+            <th scope="col" class="py-3 text-uppercase text-secondary" style="font-size: 0.85rem;">Nome do Aluno</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="presenca : ${listaPresencas}">
+            <td class="text-center py-3">
+              <div class="form-check d-flex justify-content-center m-0">
+                <input class="form-check-input border-secondary shadow-sm" style="transform: scale(1.5); cursor: pointer;"
+                       type="checkbox"
+                       name="presencasPresentes"
+                       th:value="${presenca.id}"
+                       th:checked="${presenca.presente}">
+              </div>
+            </td>
+            <td class="fw-medium text-dark py-3" th:text="${presenca.aluno.usuario.nome}">João da Silva</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="card-footer bg-white p-4 border-top">
+          <div class="d-flex justify-content-end gap-3">
+            <a href="/chamadas/nova" class="btn btn-light text-secondary fw-medium px-4 border-0 shadow-sm">Voltar</a>
+            <button type="submit" class="btn btn-primary px-4">Salvar Presenças</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

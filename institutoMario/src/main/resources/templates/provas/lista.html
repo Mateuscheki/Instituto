@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title th:text="Hackathon - Provas"></title>
+</head>
+<body>
+<div th:replace="index :: sidebar"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <h1>Provas</h1>
+        <a th:href="@{/provas/nova}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Cadastrar Prova
+        </a>
+    </div>
+
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${mensagem}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text"
+                               id="searchInput"
+                               class="form-control"
+                               placeholder="Pesquisar por título, disciplina, professor ou data...">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                            <i class="bi bi-x-circle"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-2 mt-md-0">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <span class="badge bg-primary" id="resultCount">
+                            <i class="bi bi-file-earmark-text-fill me-1"></i>
+                            <span id="countNumber" th:text="${#lists.size(provas)}">0</span> prova(s)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Data</th>
+                <th>Disciplina</th>
+                <th>Professor</th>
+                <th>Questões</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody id="provasTableBody">
+            <tr th:each="prova : ${provas}" class="prova-row">
+                <td th:text="${prova.id}" class="searchable-id">ID</td>
+                <td th:text="${prova.titulo}" class="searchable-titulo">Título da Prova</td>
+                <td th:text="${#temporals.format(prova.data, 'dd/MM/yyyy')}" class="searchable-data">20/06/2025</td>
+                <td th:text="${prova.disciplina.nome}" class="searchable-disciplina">Disciplina</td>
+                <td th:text="${prova.disciplina.professor.usuario.nome}" class="searchable-professor">Professor</td>
+                <td>
+                    <a th:href="@{'/questoes/prova/' + ${prova.id} + '/gerenciar'}" class="btn btn-sm btn-primary me-1" title="Cadastrar questão">
+                        <i class="bi bi-plus-circle"></i>
+                    </a>
+                </td>
+                <td>
+                    <a th:href="@{'/provas/editar/' + ${prova.id}}" class="btn btn-sm btn-warning me-1" title="Editar Prova">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+
+                    <a th:href="@{'/provas/exportar/' + ${prova.id}}" target="_blank" class="btn btn-sm btn-info me-1" title="Exportar/Imprimir Prova">
+                        <i class="bi bi-printer-fill"></i>
+                    </a>
+
+                    <a th:href="@{'/provas/deletar/' + ${prova.id}}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Tem certeza que deseja excluir esta prova?');" title="Excluir Prova">
+                        <i class="bi bi-trash-fill"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(provas)}">
+                <td colspan="7" class="text-center">Nenhuma prova cadastrada.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="noResults" class="alert alert-info text-center" style="display: none;">
+        <i class="bi bi-info-circle me-2"></i>
+        Nenhuma prova encontrada com os critérios de pesquisa.
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const rows = document.querySelectorAll('.prova-row');
+        const noResults = document.getElementById('noResults');
+        const countNumber = document.getElementById('countNumber');
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const id = row.querySelector('.searchable-id').textContent.toLowerCase();
+                const titulo = row.querySelector('.searchable-titulo').textContent.toLowerCase();
+                const data = row.querySelector('.searchable-data').textContent.toLowerCase();
+                const disciplina = row.querySelector('.searchable-disciplina').textContent.toLowerCase();
+                const professor = row.querySelector('.searchable-professor').textContent.toLowerCase();
+
+                const match = id.includes(searchTerm) ||
+                             titulo.includes(searchTerm) ||
+                             data.includes(searchTerm) ||
+                             disciplina.includes(searchTerm) ||
+                             professor.includes(searchTerm);
+
+                if (match) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            countNumber.textContent = visibleCount;
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        searchInput.addEventListener('input', performSearch);
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            performSearch();
+            searchInput.focus();
+        });
+    });
+</script>
+
+<script th:src="@{/js/sidebar-toggle.js}"></script>
+</body>
+</html>

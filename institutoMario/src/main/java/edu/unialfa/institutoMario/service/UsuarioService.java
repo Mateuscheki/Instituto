@@ -1,0 +1,99 @@
+package edu.unialfa.institutoMario.service;
+
+import edu.unialfa.institutoMario.model.Usuario;
+import edu.unialfa.institutoMario.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import java.util.regex.Pattern;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class UsuarioService implements UserDetailsService {
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AlunoService alunoService;
+    private final ProfessorService professorService;
+    private static final Pattern APENAS_DIGITOS = Pattern.compile("^[0-9]+$");
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            Long id = Long.parseLong(username);
+            return usuarioRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Usuário com ID " + id + " não encontrado"));
+        } catch (NumberFormatException e) {
+            throw new UsernameNotFoundException("ID inválido: " + username);
+        }
+    }
+
+    @Transactional
+    public void salvar(Usuario usuario) {
+        validarFormatoCPF(usuario.getCpf());
+        if (usuario.getId() != null) {
+            Usuario original = usuarioRepository.findById(usuario.getId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+                usuario.setSenha(original.getSenha());
+            } else {
+                usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            }
+        } else {
+            if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+                throw new IllegalArgumentException("Senha é obrigatória no cadastro.");
+            }
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        }
+        usuarioRepository.save(usuario);
+    }
+
+
+    private void validarFormatoCPF(String cpf){
+        if (cpf == null || cpf.isBlank()){
+            throw new IllegalArgumentException("O CPF é obrigatório.");
+        }
+        if (cpf.length() != 11){
+            throw new IllegalArgumentException("O CPF invalido.");
+        }
+        if (!APENAS_DIGITOS.matcher(cpf).matches()){
+            throw new IllegalArgumentException("O CPF deve conter apenas números.");
+        }
+    }
+
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
+    }
+
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + id));
+    }
+
+    @Transactional
+    public void deletarPorId(Long id) {
+        professorService.deletarPorUsuarioId(id);
+        alunoService.deletarPorUsuarioId(id);
+        usuarioRepository.deleteById(id);
+    }
+
+    public Usuario getUsuarioLogado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (Usuario) auth.getPrincipal();
+    }
+
+    public boolean existsByEmailAndIdNot(String email, Long id) {
+        Long idVerificado = id != null ? id : 0L;
+        return usuarioRepository.existsByEmailAndIdNot(email, idVerificado);
+    }
+
+    public boolean existsByCpfAndIdNot(String cpf, Long id) {
+        Long idVerificado = id != null ? id : 0L;
+        return usuarioRepository.existsByCpfAndIdNot(cpf, idVerificado);
+    }
+}

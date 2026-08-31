@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{index :: head}"></head>
+<body>
+
+<div th:replace="~{index :: sidebar}"></div>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1>Gerar Autorização</h1>
+                <p class="text-muted">Preencha os dados e veja a pré-visualização abaixo em tempo real.</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+
+                <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span th:text="${mensagemSucesso}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Atenção:</strong> <span th:text="${mensagemErro}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Dados do Evento</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:object="${dados}">
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Selecione a Turma <span class="text-danger">*</span>:</label>
+                                    <select class="form-select" th:field="*{turmaId}" id="selectTurma" required>
+                                        <option value="" disabled selected>-- Selecione --</option>
+                                        <option th:each="turma : ${turmas}"
+                                                th:value="${turma.id}"
+                                                th:text="${turma.nome}"></option>
+                                    </select>
+                                    <div class="form-text">Certifique-se de que a turma possui alunos cadastrados.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Nome do Evento/Passeio <span class="text-danger">*</span>:</label>
+                                    <input type="text" class="form-control" th:field="*{tituloEvento}" id="inputTitulo" placeholder="Ex: Visita ao Museu" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Local <span class="text-danger">*</span>:</label>
+                                    <input type="text" class="form-control" th:field="*{local}" id="inputLocal" placeholder="Ex: Museu de Arte Moderna" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Data <span class="text-danger">*</span>:</label>
+                                    <input type="date" class="form-control" th:field="*{dataEvento}" id="inputData" required>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label">Saída <span class="text-danger">*</span>:</label>
+                                    <input type="time" class="form-control" th:field="*{horarioSaida}" id="inputSaida" required>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label">Retorno <span class="text-danger">*</span>:</label>
+                                    <input type="time" class="form-control" th:field="*{horarioRetorno}" id="inputRetorno" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Observações:</label>
+                                    <textarea class="form-control" th:field="*{descricao}" id="inputObs" rows="3" placeholder="Ex: Trazer garrafa de água..."></textarea>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-grid gap-2">
+                                <button type="submit"
+                                        formaction="/autorizacoes/imprimir"
+                                        formtarget="_blank"
+                                        class="btn btn-outline-dark btn-lg">
+                                    <i class="bi bi-printer me-2"></i> Gerar PDF
+                                </button>
+
+                                <button type="submit"
+                                        formaction="/autorizacoes/enviar-email"
+                                        onclick="return confirm('Tem certeza? Isso enviará um e-mail para os pais de TODOS os alunos da turma selecionada.');"
+                                        class="btn btn-success btn-lg">
+                                    <i class="bi bi-envelope-at me-2"></i> Enviar por E-mail
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card shadow-sm bg-light h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-eye me-2"></i>Pré-visualização do Documento</h5>
+                    </div>
+                    <div class="card-body d-flex justify-content-center align-items-center bg-secondary bg-opacity-10">
+
+                        <div class="paper-preview bg-white shadow p-5" style="width: 100%; max-width: 600px; aspect-ratio: 1 / 1.41; font-family: 'Times New Roman', serif;">
+
+                            <div class="text-center mb-4 pb-3" style="border-bottom: 2px solid #003366;">
+                                <h3 style="color: #003366; margin: 0;">INSTITUTO MÁRIO GAZIN</h3>
+                                <small class="text-muted">Autorização de Saída Pedagógica</small>
+                            </div>
+
+                            <p class="mb-3" style="text-align: justify; line-height: 1.6;">
+                                Eu, responsável legal pelo(a) aluno(a) <strong>[NOME DO ALUNO]</strong>,
+                                autorizo a sua participação no evento descrito abaixo:
+                            </p>
+
+                            <div style="background-color: #f8f9fa; padding: 20px; border: 1px solid #ddd; margin: 20px 0;">
+                                <p class="mb-2"><strong>Evento:</strong> <span id="prevTitulo" class="text-primary fw-bold">---</span></p>
+                                <p class="mb-2"><strong>Local:</strong> <span id="prevLocal">---</span></p>
+                                <p class="mb-2"><strong>Data:</strong> <span id="prevData">---</span></p>
+                                <p class="mb-2">
+                                    <strong>Horários:</strong>
+                                    Saída às <span id="prevSaida">--:--</span> |
+                                    Retorno às <span id="prevRetorno">--:--</span>
+                                </p>
+                                <p class="mb-0 mt-3 fst-italic text-muted border-top pt-2">
+                                    <strong>Obs:</strong> <span id="prevObs">---</span>
+                                </p>
+                            </div>
+
+                            <p class="mt-4 text-justify" style="font-size: 0.9rem;">
+                                Declaro estar ciente das normas da instituição e comprometo-me a orientar o aluno sobre o cumprimento das regras durante o passeio.
+                            </p>
+
+                            <div class="mt-5 pt-4 text-center" style="border-top: 1px solid #000; width: 60%; margin: 80px auto 0 auto;">
+                                Assinatura do Responsável
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Função auxiliar para formatar data (yyyy-mm-dd -> dd/mm/yyyy)
+    function formatarData(dataAmericana) {
+        if (!dataAmericana) return '---';
+        const partes = dataAmericana.split('-');
+        if (partes.length !== 3) return dataAmericana;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    // Mapeamento dos campos
+    const campos = [
+        { input: 'inputTitulo', preview: 'prevTitulo' },
+        { input: 'inputLocal', preview: 'prevLocal' },
+        { input: 'inputSaida', preview: 'prevSaida' },
+        { input: 'inputRetorno', preview: 'prevRetorno' },
+        { input: 'inputObs', preview: 'prevObs' }
+    ];
+
+    // Adiciona "ouvinte" para campos de texto simples
+    campos.forEach(item => {
+        const inputElem = document.getElementById(item.input);
+        const prevElem = document.getElementById(item.preview);
+
+        if(inputElem && prevElem) {
+            inputElem.addEventListener('input', function() {
+                // Se estiver vazio, coloca '---', senão coloca o valor digitado
+                prevElem.textContent = this.value || '---';
+            });
+        }
+    });
+
+    // Tratamento especial para a Data (para formatar dia/mês/ano)
+    const inputData = document.getElementById('inputData');
+    const prevData = document.getElementById('prevData');
+    if (inputData && prevData) {
+        inputData.addEventListener('input', function() {
+            prevData.textContent = formatarData(this.value);
+        });
+    }
+</script>
+
+</body>
+</html>
