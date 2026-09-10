@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Aluno;
 import edu.unialfa.institutoMario.model.Turma;
 import edu.unialfa.institutoMario.model.Usuario;
@@ -19,6 +21,7 @@ public class AlunoService {
     private final AlunoRepository repository;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Aluno")
     public void salvar(Aluno aluno) {
         repository.save(aluno);
     }
@@ -32,6 +35,7 @@ public class AlunoService {
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Aluno")
     public void deletarPorId(Long id) {
         repository.deleteById(id);
     }

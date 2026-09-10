@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Disciplina;
 import edu.unialfa.institutoMario.model.Professor;
 import edu.unialfa.institutoMario.model.Turma;
@@ -29,6 +31,7 @@ public class DisciplinaService {
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Disciplina")
     public void salvar(Disciplina disciplina) {
         Turma turma = turmaRepository.findById(disciplina.getTurma().getId()).orElseThrow();
         Professor professor = professorRepository.findById(disciplina.getProfessor().getId()).orElseThrow();
@@ -37,6 +40,7 @@ public class DisciplinaService {
         disciplinaRepository.save(disciplina);
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Disciplina")
     public void deletarPorId(Long id) {
         disciplinaRepository.deleteById(id);
     }

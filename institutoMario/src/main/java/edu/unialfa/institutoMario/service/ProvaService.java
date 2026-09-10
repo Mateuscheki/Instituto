@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Prova;
 import edu.unialfa.institutoMario.repository.ProvaRepository;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ public class ProvaService {
     private final RespostaAlunoRepository respostaAlunoRepository;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Prova")
     public void salvar(Prova prova) {
         repository.save(prova);
     }
@@ -31,6 +34,7 @@ public class ProvaService {
         return prova;
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Prova")
     public void deletarPorId(Long id) {
         boolean existeResposta = respostaAlunoRepository.existsByProvaId(id);
         if (existeResposta) {

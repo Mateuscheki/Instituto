@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.dto.EventoDto;
 import edu.unialfa.institutoMario.model.Evento;
 import edu.unialfa.institutoMario.repository.EventoRepository;
@@ -18,6 +20,7 @@ public class EventoService {
     private final EventoRepository repository;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Evento")
     public void salvar(Evento evento){
         repository.save(evento);
     }
@@ -30,6 +33,7 @@ public class EventoService {
         return repository.findById(id).orElseThrow(()-> new RuntimeException("Evento não encontrado"));
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Evento")
     public void deletarPorId(Long id){
         if (!repository.existsById(id)){
             throw new RuntimeException("Evento com id " + id + " não encontrado para exclusão.");

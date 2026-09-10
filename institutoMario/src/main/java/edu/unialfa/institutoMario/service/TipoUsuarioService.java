@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.TipoUsuario;
 import edu.unialfa.institutoMario.repository.TipoUsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -14,6 +16,7 @@ public class TipoUsuarioService {
     private final TipoUsuarioRepository repository;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "TipoUsuario")
     public void salvar(TipoUsuario tipoUsuario) {
         repository.save(tipoUsuario);
     }
@@ -26,6 +29,7 @@ public class TipoUsuarioService {
         return repository.findById(id).get();
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "TipoUsuario")
     public void deletarPorId(Long id) {
         repository.deleteById(id);
     }

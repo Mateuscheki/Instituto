@@ -37,8 +37,9 @@
     <a sec:authorize="hasRole('ALUNO')" th:href="@{/provas/responder}"><i class="bi bi-pencil-square"></i> Responder Prova</a>
     <a sec:authorize="hasAnyRole('ALUNO', 'PROFESSOR')" th:href="@{/notas}"><i class="bi bi-card-checklist"></i> Notas</a>
     <a th:href="@{/eventos}"><i class="bi bi-calendar-event-fill"></i> Eventos</a>
-    <a sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')" th:href="@{/chamadas/nova}"><i class="bi bi-clipboard-check"></i> Chamadas</a>
+    <a sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')" th:href="@{/chamadas}"><i class="bi bi-clipboard-check"></i> Chamadas</a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/relatorios}"><i class="bi bi-file-earmark-bar-graph-fill"></i> Relatórios</a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/logs-auditoria}"><i class="bi bi-shield-lock-fill"></i> Logs de Auditoria</a>
     <a th:href="@{/logout}" class="logout">
         <i class="bi bi-box-arrow-right"></i> Sair
     </a>

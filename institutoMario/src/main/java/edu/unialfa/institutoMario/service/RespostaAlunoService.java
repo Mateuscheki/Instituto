@@ -1,5 +1,8 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.LogAuditoriaService;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.dto.CorrecaoProvaRequest;
 import edu.unialfa.institutoMario.dto.RespostaSimplesDTO;
 import edu.unialfa.institutoMario.model.Aluno;
@@ -20,6 +23,7 @@ public class RespostaAlunoService {
     final private RespostaAlunoRepository respostaAlunoRepository;
     private final QuestaoRepository questaoRepository;
     private final AlunoService alunoService;
+    private final LogAuditoriaService logAuditoriaService;
 
     public List<RespostaAluno> listarTodas() {
         return respostaAlunoRepository.findAll();
@@ -28,9 +32,11 @@ public class RespostaAlunoService {
         return respostaAlunoRepository.findById(id).orElse(null);
     }
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "RespostaAluno")
     public void salvar(RespostaAluno respostaAluno) {
         respostaAlunoRepository.save(respostaAluno);
     }
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "RespostaAluno")
     public void deletarPorId(Long id) {
         respostaAlunoRepository.deleteById(id);
     }
@@ -73,6 +79,9 @@ public class RespostaAlunoService {
                 System.out.println("AVISO: Questão número " + numeroQuestaoStr + " não encontrada para a prova ID " + idProva);
             }
         }
+
+        logAuditoriaService.registrar(TipoAcao.CRIACAO, "Correcao de Prova", idProva,
+                "Correção lançada para a Prova (ID " + idProva + ") do Aluno (ID " + idAluno + ")");
     }
 
     public List<RespostaAluno> buscarPorAluno(Long alunoId) {

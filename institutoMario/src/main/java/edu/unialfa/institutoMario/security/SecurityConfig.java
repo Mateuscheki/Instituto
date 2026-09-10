@@ -26,6 +26,9 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
+    @Autowired
+    private AuditoriaLoginHandlers auditoriaLoginHandlers;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -74,16 +77,18 @@ public class SecurityConfig {
                         .requestMatchers("/relatorios/**").hasRole("ADMIN")
                         .requestMatchers("/vinculo-aluno-turma/**").hasRole("ADMIN")
                         .requestMatchers("/projetos/**").hasRole("ADMIN")
+                        .requestMatchers("/logs-auditoria/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler(auditoriaLoginHandlers.successHandler())
+                        .failureHandler(auditoriaLoginHandlers.failureHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessHandler(auditoriaLoginHandlers.logoutSuccessHandler())
                 )
                 .build();
     }

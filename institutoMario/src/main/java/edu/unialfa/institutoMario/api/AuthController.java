@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.api;
 
+import edu.unialfa.institutoMario.audit.LogAuditoriaService;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.dto.LoginRequestDTO;
 import edu.unialfa.institutoMario.dto.LoginResponseDTO;
 import edu.unialfa.institutoMario.model.Usuario;
@@ -22,6 +24,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final LogAuditoriaService logAuditoriaService;
 
 
     @PostMapping("/login")
@@ -38,10 +41,15 @@ public class AuthController {
             Long tipoId = usuario.getTipoUsuario().getId();
 
             if (tipoId!= 2L & tipoId!= 1l) {
+                logAuditoriaService.registrar(usuario, TipoAcao.LOGIN_FALHA, "Usuario", usuario.getId(),
+                        "Login via API negado: tipo de usuário sem permissão para este aplicativo");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Map.of("erro", "Este aplicativo é de uso exclusivo para Administradores e professores."));
             }
             var token = tokenService.gerarToken(auth);
+
+            logAuditoriaService.registrar(usuario, TipoAcao.LOGIN_SUCESSO, "Usuario", usuario.getId(),
+                    "Login via API realizado com sucesso");
 
             LoginResponseDTO response = new LoginResponseDTO(
                     token,
@@ -54,6 +62,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (AuthenticationException e) {
+            logAuditoriaService.registrarLoginFalha(data.getId(), "Login via API negado: credenciais inválidas");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("erro", "ID de usuário ou senha inválidos."));
         }

@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Usuario;
 import edu.unialfa.institutoMario.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +38,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Usuario")
     public void salvar(Usuario usuario) {
         validarFormatoCPF(usuario.getCpf());
         if (usuario.getId() != null) {
@@ -76,6 +79,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Usuario")
     public void deletarPorId(Long id) {
         professorService.deletarPorUsuarioId(id);
         alunoService.deletarPorUsuarioId(id);

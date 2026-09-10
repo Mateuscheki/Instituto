@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.dto.ProvaComQuestoesDTO;
 import edu.unialfa.institutoMario.model.Prova;
 import edu.unialfa.institutoMario.model.Questao;
@@ -17,6 +19,7 @@ public class QuestaoService {
     private final ProvaService provaService;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Questao")
     public void salvar(Questao questao) {
         repository.save(questao);
     }
@@ -29,6 +32,7 @@ public class QuestaoService {
         return repository.findById(id).get();
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Questao")
     public void deletarPorId(Long id) {
         repository.deleteById(id);
     }

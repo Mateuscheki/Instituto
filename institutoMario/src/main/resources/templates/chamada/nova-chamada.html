@@ -1,55 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Iniciar Chamada</title>
-  <!-- Link do Bootstrap adicionado para garantir o estilo -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title th:text="Hackathon - Nova Chamada"></title>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
+<div th:replace="index :: sidebar"></div>
 
-      <div class="mb-4 text-center">
-        <h3 class="mb-0 text-secondary fw-bold">Iniciar Nova Chamada</h3>
-        <p class="text-muted mt-2">Selecione a data e a turma para gerar a lista de alunos.</p>
-      </div>
-
-      <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body p-4 p-md-5">
-
-          <form action="/chamadas/salvar" method="POST">
-            <div class="mb-4">
-              <label for="data" class="form-label fw-bold text-muted">Data da Aula:</label>
-              <input type="date" id="data" name="data" class="form-control form-control-lg" required />
-            </div>
-
-            <div class="mb-5">
-              <label for="turmaId" class="form-label fw-bold text-muted">Selecione a Turma:</label>
-              <select id="turmaId" name="turmaId" class="form-select form-select-lg" required>
-                <option value="">Selecione uma turma...</option>
-                <option th:each="turma : ${turmas}"
-                        th:value="${turma.id}"
-                        th:text="${turma.nome}">
-                </option>
-              </select>
-            </div>
-
-            <div class="d-grid gap-3">
-              <button type="submit" class="btn btn-primary btn-lg">Gerar Lista de Alunos</button>
-              <a href="/" class="btn btn-light btn-lg text-secondary fw-medium border-0 shadow-sm">Voltar ao Início</a>
-            </div>
-          </form>
-
-        </div>
-      </div>
-
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h2 class="m-0">Iniciar Nova Chamada</h2>
     </div>
-  </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <p class="text-muted mb-4">Selecione a data e a turma para gerar a lista de alunos.</p>
+
+            <form th:action="@{/chamadas/salvar}" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label for="data" class="form-label">Data da Aula</label>
+                    <input type="date" id="data" name="data" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="turmaId" class="form-label">Turma</label>
+                    <select id="turmaId" name="turmaId" class="form-select" required>
+                        <option value="">Selecione uma turma...</option>
+                        <option th:each="turma : ${turmas}"
+                                th:value="${turma.id}"
+                                th:text="${turma.nome}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-success"><i class="bi bi-list-check me-1"></i> Gerar Lista de Alunos</button>
+                    <a th:href="@{/chamadas}" class="btn btn-secondary ms-2">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sidebar-toggle.js}"></script>
 </body>
 </html>

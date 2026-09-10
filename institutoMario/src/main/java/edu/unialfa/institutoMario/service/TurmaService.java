@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Disciplina;
 import edu.unialfa.institutoMario.model.Turma;
 import edu.unialfa.institutoMario.repository.TurmaRepository;
@@ -25,10 +27,12 @@ public class TurmaService {
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Turma")
     public void salvar(Turma turma) {
         turmaRepository.save(turma);
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Turma")
     public void deletarPorId(Long id) {
         Turma turma = turmaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada para o id :: " + id));

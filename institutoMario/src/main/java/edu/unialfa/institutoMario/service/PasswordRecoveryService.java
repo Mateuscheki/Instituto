@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.LogAuditoriaService;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Usuario;
 import edu.unialfa.institutoMario.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ public class PasswordRecoveryService {
     private final UsuarioRepository usuarioRepository;
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
+    private final LogAuditoriaService logAuditoriaService;
 
     @Transactional
     public boolean solicitarRecuperacaoSenha(String email, String baseUrl) {
@@ -110,6 +113,9 @@ public class PasswordRecoveryService {
         usuario.setResetPasswordTokenExpiry(null);
 
         usuarioRepository.save(usuario);
+
+        logAuditoriaService.registrar(TipoAcao.ATUALIZACAO, "Usuario", usuario.getId(),
+                "Senha redefinida via link de recuperação (Usuário ID " + usuario.getId() + ")");
 
         return true;
     }

@@ -1,71 +1,72 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Presença</title>
-  <!-- Link do Bootstrap adicionado para garantir o estilo -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title th:text="Hackathon - Lista de Presença"></title>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
+<div th:replace="index :: sidebar"></div>
 
-  <div class="mb-4">
-    <h3 class="mb-0 text-secondary fw-bold">Lista de Presença</h3>
-    <p class="text-muted mt-1">Desmarque a caixa de seleção para os alunos que estão <strong>ausentes</strong>.</p>
-  </div>
-
-  <div th:if="${param.sucesso}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
-    <strong>Feito!</strong> As presenças foram atualizadas e salvas no banco de dados com sucesso.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-
-  <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center p-3">
-      <h5 class="mb-0 fw-normal">Chamada Nominal</h5>
-      <span class="badge bg-light text-dark px-3 py-2 rounded-pill fs-6 shadow-sm"
-            th:text="${chamada.turma.nome} + ' - ' + ${#temporals.format(chamada.data, 'dd/MM/yyyy')}">
-      </span>
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h2 class="m-0">Lista de Presença</h2>
     </div>
 
-    <div class="card-body p-0">
-      <form th:action="@{/chamadas/{id}/presencas/salvar(id=${chamada.id})}" method="POST">
+    <div th:if="${param.sucesso}" class="alert alert-success" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        As presenças foram atualizadas e salvas com sucesso.
+    </div>
 
-        <table class="table table-hover table-striped align-middle mb-0">
-          <thead class="table-light">
-          <tr>
-            <th scope="col" class="py-3 text-center text-uppercase text-secondary" style="width: 15%; font-size: 0.85rem;">Presença</th>
-            <th scope="col" class="py-3 text-uppercase text-secondary" style="font-size: 0.85rem;">Nome do Aluno</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="presenca : ${listaPresencas}">
-            <td class="text-center py-3">
-              <div class="form-check d-flex justify-content-center m-0">
-                <input class="form-check-input border-secondary shadow-sm" style="transform: scale(1.5); cursor: pointer;"
-                       type="checkbox"
-                       name="presencasPresentes"
-                       th:value="${presenca.id}"
-                       th:checked="${presenca.presente}">
-              </div>
-            </td>
-            <td class="fw-medium text-dark py-3" th:text="${presenca.aluno.usuario.nome}">João da Silva</td>
-          </tr>
-          </tbody>
-        </table>
+    <div th:if="${mensagemInfo}" class="alert alert-info" role="alert" th:text="${mensagemInfo}">
+    </div>
 
-        <div class="card-footer bg-white p-4 border-top">
-          <div class="d-flex justify-content-end gap-3">
-            <a href="/chamadas/nova" class="btn btn-light text-secondary fw-medium px-4 border-0 shadow-sm">Voltar</a>
-            <button type="submit" class="btn btn-primary px-4">Salvar Presenças</button>
-          </div>
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <strong>Chamada Nominal</strong>
+            <span class="badge bg-primary"
+                  th:text="${chamada.turma.nome} + ' - ' + ${#temporals.format(chamada.data, 'dd/MM/yyyy')}">
+            </span>
         </div>
-      </form>
 
+        <form th:action="@{/chamadas/{id}/presencas/salvar(id=${chamada.id})}" method="post">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-header">
+                    <tr>
+                        <th class="text-center" style="width: 15%;">Presença</th>
+                        <th>Nome do Aluno</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="presenca : ${listaPresencas}">
+                        <td class="text-center">
+                            <input class="form-check-input" style="transform: scale(1.3); cursor: pointer;"
+                                   type="checkbox"
+                                   name="presencasPresentes"
+                                   th:value="${presenca.id}"
+                                   th:checked="${presenca.presente}">
+                        </td>
+                        <td th:text="${presenca.aluno.usuario.nome}">João da Silva</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listaPresencas)}">
+                        <td colspan="2" class="text-center">Nenhum aluno vinculado a esta turma.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                <a th:href="@{/chamadas}" class="btn btn-secondary">Voltar</a>
+                <button type="submit" class="btn btn-success"><i class="bi bi-save me-1"></i> Salvar Presenças</button>
+            </div>
+        </form>
     </div>
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sidebar-toggle.js}"></script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Professor;
 import edu.unialfa.institutoMario.model.Usuario;
 import edu.unialfa.institutoMario.repository.ProfessorRepository;
@@ -15,6 +17,7 @@ public class ProfessorService {
     private final ProfessorRepository repository;
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Professor")
     public void salvar(Professor professor) {
         repository.save(professor);
     }
@@ -27,6 +30,7 @@ public class ProfessorService {
         return repository.findById(id).get();
     }
 
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Professor")
     public void deletarPorId(Long id) {
         repository.deleteById(id);
     }

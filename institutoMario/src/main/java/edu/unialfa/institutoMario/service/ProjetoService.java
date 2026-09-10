@@ -1,5 +1,8 @@
 package edu.unialfa.institutoMario.service;
 
+import edu.unialfa.institutoMario.audit.Auditar;
+import edu.unialfa.institutoMario.audit.LogAuditoriaService;
+import edu.unialfa.institutoMario.audit.TipoAcao;
 import edu.unialfa.institutoMario.model.Documento;
 import edu.unialfa.institutoMario.model.Projetos;
 import edu.unialfa.institutoMario.repository.DocumentoRepository;
@@ -19,13 +22,17 @@ public class ProjetoService {
 
     private final ProjetoRepository projetoRepository;
     private final DocumentoRepository documentoRepository;
+    private final LogAuditoriaService logAuditoriaService;
 
-    public ProjetoService(ProjetoRepository projetoRepository, DocumentoRepository documentoRepository) {
+    public ProjetoService(ProjetoRepository projetoRepository, DocumentoRepository documentoRepository,
+                           LogAuditoriaService logAuditoriaService) {
         this.projetoRepository = projetoRepository;
         this.documentoRepository = documentoRepository;
+        this.logAuditoriaService = logAuditoriaService;
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.CRIACAO, entidade = "Projeto")
     public void salvar(Projetos projeto){
         projetoRepository.save(projeto);
     }
@@ -39,6 +46,7 @@ public class ProjetoService {
     }
 
     @Transactional
+    @Auditar(acao = TipoAcao.EXCLUSAO, entidade = "Projeto")
     public void deletarPorId(Long id) {
         if (!projetoRepository.existsById(id)) {
             throw new RuntimeException("Projeto com id " + id + " não encontrado para exclusão.");
@@ -65,6 +73,9 @@ public class ProjetoService {
         }
 
         documentoRepository.delete(doc);
+
+        logAuditoriaService.registrar(TipoAcao.EXCLUSAO, "Documento do Projeto", idDocumento,
+                "Documento excluído(a) (ID " + idDocumento + ") do Projeto (ID " + projetoId + ")");
 
         return projetoId;
     }

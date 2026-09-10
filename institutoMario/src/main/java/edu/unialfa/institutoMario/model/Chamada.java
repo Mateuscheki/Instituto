@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor      // Mantemos este, pois o JPA/Hibernate exige um construtor vazio
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "uk_chamada_turma_data", columnNames = {"turma_id", "data"}))
 public class Chamada {
 
     @Id
