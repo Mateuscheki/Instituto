@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title th:text="Hackathon - Chamadas"></title>
+</head>
+<body>
+
+<div th:replace="index :: sidebar"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h2 class="m-0">Chamadas</h2>
+        <a class="btn btn-primary" th:href="@{/chamadas/nova}">+ Nova Chamada</a>
+    </div>
+
+    <!-- Filtro -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small">Turma</label>
+                    <select id="filtroTurma" class="form-select">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small">Data</label>
+                    <input type="date" id="filtroData" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                        <i class="bi bi-x-circle"></i> Limpar filtros
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-flex align-items-center justify-content-md-end">
+                        <span class="badge bg-primary" id="resultCount">
+                            <i class="bi bi-clipboard-check me-1"></i>
+                            <span id="countNumber" th:text="${#lists.size(chamadas)}">0</span> chamada(s)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Data</th>
+                <th>Turma</th>
+                <th>Presença</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody id="chamadasTableBody">
+            <tr th:each="chamada : ${chamadas}" class="chamada-row" th:data-data="${chamada.data}">
+                <td th:text="${#temporals.format(chamada.data, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td th:text="${chamada.turmaNome}" class="searchable-turma">Turma A</td>
+                <td>
+                    <span th:text="${chamada.totalPresentes} + '/' + ${chamada.totalAlunos} + ' presentes'">0/0 presentes</span>
+                </td>
+                <td>
+                    <a class="btn btn-warning btn-sm" th:href="@{/chamadas/{id}/presencas(id=${chamada.id})}" title="Ver/Alterar presenças">
+                        <i class="bi bi-pencil-square"></i> Alterar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(chamadas)}">
+                <td colspan="4" class="text-center">Nenhuma chamada realizada ainda.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mensagem quando não encontrar resultados -->
+    <div id="noResults" class="alert alert-info text-center" style="display: none;">
+        <i class="bi bi-info-circle me-2"></i>
+        Nenhuma chamada encontrada com os critérios de pesquisa.
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const filtroTurma = document.getElementById('filtroTurma');
+        const filtroData = document.getElementById('filtroData');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const rows = document.querySelectorAll('.chamada-row');
+        const noResults = document.getElementById('noResults');
+        const countNumber = document.getElementById('countNumber');
+
+        // Popula o filtro de turma só com as turmas que já têm chamada registrada
+        const turmasUnicas = [...new Set(
+            Array.from(rows)
+                .map(row => row.querySelector('.searchable-turma')?.textContent.trim())
+                .filter(Boolean)
+        )].sort((a, b) => a.localeCompare(b));
+
+        turmasUnicas.forEach(nome => {
+            const option = document.createElement('option');
+            option.value = nome;
+            option.textContent = nome;
+            filtroTurma.appendChild(option);
+        });
+
+        function performSearch() {
+            const turmaSelecionada = filtroTurma.value;
+            const dataSelecionada = filtroData.value; // yyyy-MM-dd, mesmo formato do data-data
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const turmaCell = row.querySelector('.searchable-turma');
+                const turma = turmaCell ? turmaCell.textContent.trim() : '';
+
+                const bateTurma = !turmaSelecionada || turma === turmaSelecionada;
+                const bateData = !dataSelecionada || row.dataset.data === dataSelecionada;
+
+                if (bateTurma && bateData) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            countNumber.textContent = visibleCount;
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        filtroTurma.addEventListener('change', performSearch);
+        filtroData.addEventListener('change', performSearch);
+        clearSearchBtn.addEventListener('click', function() {
+            filtroTurma.value = '';
+            filtroData.value = '';
+            performSearch();
+        });
+    });
+</script>
+
+<script th:src="@{/js/sidebar-toggle.js}"></script>
+</body>
+</html>

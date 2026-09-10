@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head">
+    <meta charset="UTF-8">
+    <title th:text="Hackathon - Logs de Auditoria"></title>
+</head>
+<body>
+<div th:replace="index :: sidebar"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="m-0">Logs de Auditoria</h1>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="get" th:action="@{/logs-auditoria}" class="row g-2 align-items-end">
+                <div class="col-md-2">
+                    <label class="form-label small">ID do usuário</label>
+                    <input type="number" name="usuarioId" class="form-control" th:value="${usuarioId}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Ação</label>
+                    <select name="acao" class="form-select">
+                        <option value="">Todas</option>
+                        <option th:each="tipo : ${tiposAcao}"
+                                th:value="${tipo}"
+                                th:text="${tipo}"
+                                th:selected="${tipo == acao}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Entidade</label>
+                    <select name="entidade" class="form-select">
+                        <option value="">Todas</option>
+                        <option th:each="ent : ${entidades}"
+                                th:value="${ent}"
+                                th:text="${ent}"
+                                th:selected="${ent == entidade}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">De</label>
+                    <input type="date" name="dataInicio" class="form-control" th:value="${dataInicio}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Até</label>
+                    <input type="date" name="dataFim" class="form-control" th:value="${dataFim}">
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Filtrar
+                    </button>
+                    <a th:href="@{/logs-auditoria}" class="btn btn-outline-secondary" title="Limpar filtros">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Data/Hora</th>
+                <th>Usuário</th>
+                <th>Ação</th>
+                <th>Entidade</th>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>IP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${logs.content}">
+                <td th:text="${#temporals.format(log.dataHora, 'dd/MM/yyyy HH:mm:ss')}">01/01/2025 10:00:00</td>
+                <td>
+                    <span th:text="${log.usuarioNome}">Nome</span>
+                    <span th:if="${log.usuarioId != null}" class="text-muted small" th:text="'(ID ' + ${log.usuarioId} + ')'"></span>
+                </td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${log.acao.name() == 'EXCLUSAO'} ? 'bg-danger' : (${log.acao.name() == 'LOGIN_FALHA'} ? 'bg-danger' : (${log.acao.name() == 'CRIACAO'} ? 'bg-success' : (${log.acao.name() == 'LOGIN_SUCESSO'} ? 'bg-success' : 'bg-secondary')))"
+                          th:text="${log.acao}">ACAO</span>
+                </td>
+                <td th:text="${log.entidade}">Entidade</td>
+                <td th:text="${log.entidadeId}">ID</td>
+                <td th:text="${log.descricao}">Descrição</td>
+                <td th:text="${log.ip}">IP</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${logs.content.isEmpty()}" class="alert alert-info text-center">
+        <i class="bi bi-info-circle me-2"></i> Nenhum registro encontrado com os filtros informados.
+    </div>
+
+    <!-- Paginação -->
+    <nav th:if="${logs.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${logs.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/logs-auditoria(pagina=${logs.number - 1}, usuarioId=${usuarioId}, acao=${acao}, entidade=${entidade}, dataInicio=${dataInicio}, dataFim=${dataFim})}">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="'Página ' + ${logs.number + 1} + ' de ' + ${logs.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${logs.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/logs-auditoria(pagina=${logs.number + 1}, usuarioId=${usuarioId}, acao=${acao}, entidade=${entidade}, dataInicio=${dataInicio}, dataFim=${dataFim})}">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script th:src="@{/js/sidebar-toggle.js}"></script>
+</body>
+</html>
