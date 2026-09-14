@@ -1,0 +1,153 @@
+/*
+ * Módulo Benefícios — identidade visual (ver CLAUDE.md do módulo).
+ * Reaproveita os tons institucionais já usados no resto do sistema
+ * (ver static/css/style.css: sidebar #004aad / hover #003080 / fundo #f7f9fc)
+ * em vez de inventar uma paleta nova.
+ */
+
+:root {
+    --beneficios-azul: #004aad;
+    --beneficios-azul-escuro: #003080;
+    --beneficios-fundo: #f7f9fc;
+    --beneficios-cinza-azulado: #5c6b7a;
+    --beneficios-borda: #e3e8ef;
+}
+
+/* Badge superior de seção, ex.: "CADASTRO E ATENDIMENTO" */
+.beneficios-badge-secao {
+    display: inline-block;
+    background-color: var(--beneficios-azul);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+}
+
+/* Título de seção em azul-marinho institucional */
+.beneficios-titulo-secao {
+    color: var(--beneficios-azul-escuro);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+/* Faixa de status no topo do cartão, ex.: "Perfil ativo: Gestão..." */
+.beneficios-faixa-status {
+    background-color: var(--beneficios-fundo);
+    border: 1px solid var(--beneficios-borda);
+    border-left: 4px solid var(--beneficios-azul);
+    border-radius: 0.375rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    color: var(--beneficios-cinza-azulado);
+    margin-bottom: 1rem;
+}
+
+/* Cartão padrão do módulo */
+.beneficios-card {
+    border: 1px solid var(--beneficios-borda);
+    border-radius: 0.5rem;
+}
+
+.beneficios-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Label de campo: caixa alta, cinza-azulado (ver fragments/campos.html) */
+.campo-label {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--beneficios-cinza-azulado);
+}
+
+/* Ações do módulo */
+.btn-beneficios-primario {
+    background-color: var(--beneficios-azul);
+    border-color: var(--beneficios-azul);
+    color: #fff;
+}
+
+.btn-beneficios-primario:hover {
+    background-color: var(--beneficios-azul-escuro);
+    border-color: var(--beneficios-azul-escuro);
+    color: #fff;
+}
+
+.btn-beneficios-secundario {
+    background-color: #fff;
+    border-color: var(--beneficios-borda);
+    color: var(--beneficios-cinza-azulado);
+}
+
+/* Badges de status (StatusBeneficiario / SeveridadeAviso) */
+.badge-sucesso { background-color: #1e7e34; color: #fff; }
+.badge-info { background-color: #0d6efd; color: #fff; }
+.badge-alerta { background-color: #c9971c; color: #fff; }
+.badge-perigo { background-color: #b02a37; color: #fff; }
+.badge-neutro { background-color: #6c757d; color: #fff; }
+
+/* Cards de atalho da home do módulo */
+.beneficios-atalho {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    border: 1px solid var(--beneficios-borda);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    color: inherit;
+}
+
+.beneficios-atalho:hover {
+    box-shadow: 0 0.35rem 1rem rgba(0, 74, 173, 0.12);
+    transform: translateY(-2px);
+    color: inherit;
+}
+
+.beneficios-atalho .bi {
+    font-size: 1.6rem;
+    color: var(--beneficios-azul);
+}
+
+.beneficios-atalho.em-breve {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.beneficios-atalho .beneficios-atalho-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--beneficios-cinza-azulado);
+}
+
+/*
+ * Comprovante de retirada (Etapa 3): imprime em uma página, sem menu
+ * lateral. `.no-print` marca tudo que só faz sentido na tela (sidebar,
+ * botões de ação) — ver templates/retiradas/comprovante.html.
+ */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        background-color: #fff !important;
+    }
+
+    body {
+        background-color: #fff !important;
+    }
+
+    .beneficios-comprovante {
+        box-shadow: none !important;
+        border: none !important;
+    }
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Beneficiários</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0">Beneficiários</h1>
+        <a th:href="@{/beneficios/beneficiarios/novo}" class="btn btn-beneficios-primario">
+            <i class="bi bi-person-plus-fill"></i> Novo beneficiário
+        </a>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <!-- Filtros -->
+    <div class="beneficios-card card mb-3">
+        <div class="card-body">
+            <form th:action="@{/beneficios/beneficiarios}" method="get" class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label campo-label">Nome</label>
+                    <input type="text" name="nome" class="form-control" th:value="${filtro.nome}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">CPF</label>
+                    <input type="text" name="cpf" class="form-control mascara-cpf" th:value="${filtro.cpf}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">Todos</option>
+                        <option th:each="opcao : ${statusOpcoes}"
+                                th:value="${opcao.key}" th:text="${opcao.value}"
+                                th:selected="${opcao.key == filtro.status}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Cidade</label>
+                    <input type="text" name="cidade" class="form-control" th:value="${filtro.cidade}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Bairro</label>
+                    <input type="text" name="bairro" class="form-control" th:value="${filtro.bairro}">
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-beneficios-primario w-100">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label campo-label">Padrinho/madrinha</label>
+                    <select name="padrinhoId" class="form-select">
+                        <option value="">Todos</option>
+                        <option th:each="padrinho : ${padrinhos}"
+                                th:value="${padrinho.id}" th:text="${padrinho.nome}"
+                                th:selected="${padrinho.id == filtro.padrinhoId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Ativo</label>
+                    <select name="ativo" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="true" th:selected="${filtro.ativo == true}">Sim</option>
+                        <option value="false" th:selected="${filtro.ativo == false}">Não</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label campo-label">Prazo vencendo em até (dias)</label>
+                    <input type="number" name="prazoVencendoEmDias" class="form-control" min="0" th:value="${filtro.prazoVencendoEmDias}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a th:href="@{/beneficios/beneficiarios}" class="btn btn-beneficios-secundario w-100">
+                        <i class="bi bi-x-circle"></i> Limpar filtros
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Cidade/Bairro</th>
+                <th>Status</th>
+                <th>Prazo final</th>
+                <th>Padrinho</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${pagina.content}">
+                <td th:text="${item.nome}">Nome</td>
+                <td th:text="${#cpf.mascararConformePerfil(item.cpf)}">CPF</td>
+                <td th:text="${(item.cidade ?: '—') + ' / ' + (item.bairro ?: '—')}">Cidade / Bairro</td>
+                <td>
+                    <span class="badge" th:classappend="${item.status.cssBadge}" th:text="${item.status.descricao}">Status</span>
+                </td>
+                <td th:text="${item.prazoFinalBeneficio != null ? #temporals.format(item.prazoFinalBeneficio, 'dd/MM/yyyy') : '—'}">—</td>
+                <td th:text="${item.padrinhoNome ?: '—'}">—</td>
+                <td>
+                    <span class="badge" th:classappend="${item.ativo} ? 'bg-success' : 'bg-secondary'"
+                          th:text="${item.ativo} ? 'Sim' : 'Não'"></span>
+                </td>
+                <td>
+                    <a th:href="@{/beneficios/beneficiarios/{id}(id=${item.id})}" class="btn btn-sm btn-beneficios-primario" title="Ver ficha">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </a>
+                    <a th:href="@{/beneficios/beneficiarios/{id}/editar(id=${item.id})}" class="btn btn-sm btn-warning" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${pagina.content.isEmpty()}">
+                <td colspan="8" class="text-center">Nenhum beneficiário encontrado com os filtros informados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação preservando os filtros -->
+    <nav th:if="${pagina.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/beneficios/beneficiarios(page=${pagina.number - 1}, nome=${filtro.nome}, cpf=${filtro.cpf}, status=${filtro.status}, cidade=${filtro.cidade}, bairro=${filtro.bairro}, padrinhoId=${filtro.padrinhoId}, ativo=${filtro.ativo}, prazoVencendoEmDias=${filtro.prazoVencendoEmDias})">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="'Página ' + ${pagina.number + 1} + ' de ' + ${pagina.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/beneficios/beneficiarios(page=${pagina.number + 1}, nome=${filtro.nome}, cpf=${filtro.cpf}, status=${filtro.status}, cidade=${filtro.cidade}, bairro=${filtro.bairro}, padrinhoId=${filtro.padrinhoId}, ativo=${filtro.ativo}, prazoVencendoEmDias=${filtro.prazoVencendoEmDias})">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

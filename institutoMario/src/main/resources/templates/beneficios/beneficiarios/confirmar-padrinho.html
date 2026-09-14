@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Confirmar vínculo de padrinho</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <span class="beneficios-badge-secao">CONFIRMAÇÃO NECESSÁRIA</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Confirmar vínculo de padrinho</h1>
+
+    <form th:action="@{/beneficios/beneficiarios/{id}/padrinho(id=${camposOcultos.beneficiarioId})}" method="post">
+        <div th:replace="~{fragments/campos :: hiddensDoForm(campos=${camposOcultos})}"></div>
+
+        <div class="beneficios-card card mb-3">
+            <div class="card-body row row-cols-1 row-cols-md-2 g-2">
+                <div><strong>Beneficiário:</strong> <span th:text="${beneficiarioNome}">—</span></div>
+                <div><strong>Voluntário:</strong> <span th:text="${voluntarioNome}">—</span></div>
+            </div>
+        </div>
+
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Aviso de confirmação</strong></div>
+            <div class="card-body">
+                <div th:each="aviso : ${avisos}" class="alert alert-danger">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="avisosConfirmados"
+                               th:value="${aviso.codigo}" th:id="'aviso_' + ${aviso.codigo}">
+                        <label class="form-check-label" th:for="'aviso_' + ${aviso.codigo}">
+                            <strong>Confirmo e autorizo:</strong> <span th:text="${aviso.mensagem}">Mensagem</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-2 mt-3">
+                    <label for="justificativa" class="form-label campo-label">Justificativa (obrigatória)</label>
+                    <textarea id="justificativa" name="justificativa" class="form-control" rows="2"
+                              th:text="${justificativaDigitada}"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <a th:href="@{/beneficios/beneficiarios/{id}(id=${camposOcultos.beneficiarioId})}" class="btn btn-beneficios-secundario">
+            <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-beneficios-primario">
+            <i class="bi bi-check-circle"></i> Confirmar vínculo
+        </button>
+    </form>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

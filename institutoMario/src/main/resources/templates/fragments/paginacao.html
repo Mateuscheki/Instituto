@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Paginação genérica para qualquer org.springframework.data.domain.Page.
+  Uso: <div th:replace="~{fragments/paginacao :: paginacao(pagina=${minhaPage}, baseUrl='/beneficios/algo')}"></div>
+  `baseUrl` é só o caminho — o parâmetro `pagina` é anexado por este fragmento.
+-->
+<div th:fragment="paginacao(pagina, baseUrl)" th:if="${pagina != null and pagina.totalPages > 1}">
+    <nav aria-label="Paginação">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(pagina=${pagina.number - 1})}">
+                    <i class="bi bi-chevron-left"></i> Anterior
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="'Página ' + ${pagina.number + 1} + ' de ' + ${pagina.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link" th:href="@{${baseUrl}(pagina=${pagina.number + 1})}">
+                    Próxima <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Histórico de retiradas do beneficiário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0" th:text="'Retiradas de ' + ${historico.beneficiarioNome}">Histórico</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/beneficios/retiradas/registrar(cpf=${historico.beneficiarioCpf})}" class="btn btn-beneficios-primario">
+                <i class="bi bi-basket2-fill"></i> Registrar retirada
+            </a>
+            <a th:href="@{/beneficios/beneficiarios/{id}(id=${historico.beneficiarioId})}" class="btn btn-beneficios-secundario">
+                <i class="bi bi-arrow-left"></i> Voltar à ficha
+            </a>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <!-- Resumo -->
+    <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Total de cestas</div>
+                    <div class="h3 mb-0" th:text="${historico.totalCestas}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Meses consecutivos</div>
+                    <div class="h3 mb-0" th:text="${historico.mesesConsecutivos}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Meses sem retirar</div>
+                    <div class="h3 mb-0" th:text="${historico.mesesSemRetirar}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="beneficios-card card h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Por tipo de retirante</div>
+                    <div th:each="entrada : ${historico.distribuicaoPorTipoRetirante}" class="small">
+                        <span th:text="${entrada.key.descricao}">Tipo</span>: <strong th:text="${entrada.value}">0</strong>
+                    </div>
+                    <div th:if="${#maps.isEmpty(historico.distribuicaoPorTipoRetirante)}" class="small text-muted">Nenhuma retirada ainda.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Mês</th>
+                <th>Data</th>
+                <th>Retirante</th>
+                <th>Situação</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="retirada : ${historico.retiradas}" th:classappend="${retirada.cancelada} ? 'table-secondary'">
+                <td th:text="${#temporals.format(retirada.mesReferencia, 'MM/yyyy')}">—</td>
+                <td th:text="${#temporals.format(retirada.dataRetirada, 'dd/MM/yyyy HH:mm')}">—</td>
+                <td th:text="${retirada.retiranteNome} + ' (' + ${retirada.tipoRetirante.descricao} + ')'">—</td>
+                <td>
+                    <span class="badge" th:classappend="${retirada.cancelada} ? 'bg-secondary' : 'bg-success'"
+                          th:text="${retirada.cancelada} ? 'Cancelada' : 'Válida'"></span>
+                </td>
+                <td>
+                    <a th:href="@{/beneficios/retiradas/{id}(id=${retirada.id})}" class="btn btn-sm btn-beneficios-primario">
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(historico.retiradas)}">
+                <td colspan="5" class="text-center">Nenhuma retirada registrada ainda.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

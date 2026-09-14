@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Voluntário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-faixa-status" style="border-left-color: #1e7e34;">
+        <i class="bi bi-shield-check me-1"></i>
+        Cadastro liberado conforme permissão.
+    </div>
+
+    <span class="beneficios-badge-secao">CADASTRO E ATENDIMENTO</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3" th:text="${tituloPagina}">Voluntário</h1>
+
+    <form th:action="@{/beneficios/voluntarios/salvar}" th:object="${voluntarioForm}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="beneficios-card card mb-4">
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='nome', nome='nome', label='Nome completo', valor=${voluntarioForm.nome}, obrigatorio=true, placeholder='')}"></div>
+                    <div th:if="${#fields.hasErrors('nome')}" class="text-danger small mt-n2 mb-2" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoCpf(id='cpf', nome='cpf', label='CPF (opcional)', valor=${voluntarioForm.cpf}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('cpf')}" class="text-danger small mt-n2 mb-2" th:errors="*{cpf}">Erro</div>
+                    <div th:if="${cpfDuplicadoId != null}" class="small mt-n2 mb-2">
+                        <a th:href="@{/beneficios/voluntarios/{id}(id=${cpfDuplicadoId})}">Abrir cadastro existente</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTelefone(id='telefone', nome='telefone', label='Telefone', valor=${voluntarioForm.telefone}, obrigatorio=false)}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='email', nome='email', label='E-mail', valor=${voluntarioForm.email}, obrigatorio=false, placeholder='')}"></div>
+                    <div th:if="${#fields.hasErrors('email')}" class="text-danger small mt-n2 mb-2" th:errors="*{email}">Erro</div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='areaAtuacao', nome='areaAtuacao', label='Área de atuação', valor=${voluntarioForm.areaAtuacao}, obrigatorio=false, placeholder='Ex.: entrega, eventos, triagem')}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='setor', nome='setor', label='Setor', valor=${voluntarioForm.setor}, obrigatorio=false, placeholder='Ex.: comercial')}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='disponibilidade', nome='disponibilidade', label='Disponibilidade', valor=${voluntarioForm.disponibilidade}, obrigatorio=false, placeholder='Ex.: sábado pela manhã')}"></div>
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" id="padrinho" name="padrinho" value="true"
+                               th:checked="${voluntarioForm.padrinho == 'true'}">
+                        <label class="form-check-label campo-label" for="padrinho">É padrinho/madrinha</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div th:replace="~{fragments/campos :: campoTextarea(id='observacao', nome='observacao', label='Observação', valor=${voluntarioForm.observacao}, linhas=3)}"></div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-beneficios-primario">
+            <i class="bi bi-save"></i> Salvar voluntário
+        </button>
+        <a th:href="@{/beneficios/voluntarios/novo}" class="btn btn-beneficios-secundario ms-2">Limpar</a>
+        <a th:href="@{/beneficios/voluntarios}" class="btn btn-beneficios-secundario ms-2">Voltar à lista</a>
+    </form>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

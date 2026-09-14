@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Detalhe da retirada</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0">Retirada #<span th:text="${detalhe.id}"></span></h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/beneficios/retiradas/{id}/comprovante(id=${detalhe.id})}" class="btn btn-beneficios-primario">
+                <i class="bi bi-printer-fill"></i> Comprovante
+            </a>
+            <a th:href="@{/beneficios/retiradas}" class="btn btn-beneficios-secundario">
+                <i class="bi bi-arrow-left"></i> Voltar ao histórico
+            </a>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <span class="badge fs-6 mb-3" th:classappend="${detalhe.cancelada} ? 'bg-secondary' : 'bg-success'"
+          th:text="${detalhe.cancelada} ? 'Cancelada' : 'Válida'"></span>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Dados da retirada</strong></div>
+                <div class="card-body row row-cols-1 row-cols-md-2 g-2">
+                    <div><strong>Beneficiário:</strong>
+                        <a th:href="@{/beneficios/beneficiarios/{id}(id=${detalhe.beneficiarioId})}" th:text="${detalhe.beneficiarioNome}">—</a>
+                    </div>
+                    <div><strong>CPF do beneficiário:</strong> <span th:text="${#cpf.mascararConformePerfil(detalhe.beneficiarioCpf)}">—</span></div>
+                    <div><strong>Mês de referência:</strong> <span th:text="${#temporals.format(detalhe.mesReferencia, 'MM/yyyy')}">—</span></div>
+                    <div><strong>Data/hora:</strong> <span th:text="${#temporals.format(detalhe.dataRetirada, 'dd/MM/yyyy HH:mm')}">—</span></div>
+                    <div><strong>Quantidade de cestas:</strong> <span th:text="${detalhe.quantidadeCestas}">—</span></div>
+                    <div><strong>Tipo de retirante:</strong> <span th:text="${detalhe.tipoRetirante.descricao}">—</span></div>
+                    <div><strong>Retirante:</strong> <span th:text="${detalhe.retiranteNome}">—</span></div>
+                    <div><strong>CPF do retirante:</strong> <span th:text="${detalhe.retiranteCpf ?: '—'}">—</span></div>
+                    <div><strong>Vínculo:</strong> <span th:text="${detalhe.retiranteVinculo ?: '—'}">—</span></div>
+                    <div><strong>Padrinho/madrinha:</strong> <span th:text="${detalhe.retiradoPorPadrinho ? (detalhe.padrinhoNome ?: '—') : 'Não'}">—</span></div>
+                    <div><strong>Entregue por:</strong> <span th:text="${detalhe.voluntarioEntregaNome ?: '—'}">—</span></div>
+                    <div><strong>Registrado por:</strong> <span th:text="${detalhe.registradoPor}">—</span></div>
+                    <div class="col-12" th:if="${detalhe.observacao}"><strong>Observação:</strong> <span th:text="${detalhe.observacao}">—</span></div>
+                </div>
+            </div>
+
+            <div th:if="${detalhe.cancelada}" class="alert alert-danger">
+                <strong>Cancelada</strong> em <span th:text="${#temporals.format(detalhe.canceladaEm, 'dd/MM/yyyy HH:mm')}"></span>
+                por <span th:text="${detalhe.canceladaPor}"></span>.
+                Motivo: <span th:text="${detalhe.motivoCancelamento}"></span>
+            </div>
+
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Avisos confirmados</strong></div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(detalhe.confirmacoes)}" class="text-muted">Nenhum aviso foi confirmado nesta retirada.</div>
+                    <div th:each="confirmacao : ${detalhe.confirmacoes}"
+                         class="alert mb-2"
+                         th:classappend="${confirmacao.severidade.name() == 'ALTA'} ? 'alert-danger' : (${confirmacao.severidade.name() == 'ATENCAO'} ? 'alert-warning' : 'alert-info')">
+                        <strong th:text="${confirmacao.codigoAviso}">CODIGO</strong> — <span th:text="${confirmacao.mensagem}">mensagem</span>
+                        <div class="small mt-1">
+                            Confirmado por <strong th:text="${confirmacao.confirmadoPor}"></strong>
+                            em <span th:text="${#temporals.format(confirmacao.confirmadoEm, 'dd/MM/yyyy HH:mm')}"></span>
+                        </div>
+                        <div class="small" th:if="${confirmacao.justificativa}">
+                            Justificativa: <em th:text="${confirmacao.justificativa}"></em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="beneficios-card card mb-3" th:if="${!detalhe.cancelada}">
+                <div class="card-header"><strong>Cancelar retirada</strong></div>
+                <div class="card-body">
+                    <p class="text-muted small">Retirada não se edita — só se cancela e se registra outra.</p>
+                    <form th:action="@{/beneficios/retiradas/{id}/cancelar(id=${detalhe.id})}" method="post"
+                          onsubmit="return confirm('Confirma o cancelamento desta retirada?');">
+                        <div class="mb-2">
+                            <textarea name="motivo" class="form-control" rows="2" placeholder="Motivo do cancelamento" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-x-circle"></i> Cancelar retirada
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

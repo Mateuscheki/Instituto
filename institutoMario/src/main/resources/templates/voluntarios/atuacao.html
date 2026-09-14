@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Atuação do voluntário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0" th:text="${atuacao.nome}">Nome</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/beneficios/voluntarios/{id}/editar(id=${atuacao.id})}" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a th:href="@{/beneficios/voluntarios}" class="btn btn-beneficios-secundario">
+                <i class="bi bi-arrow-left"></i> Voltar à lista
+            </a>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-faixa-status d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span>
+            <span class="badge me-2" th:classappend="${atuacao.padrinho} ? 'bg-success' : 'bg-secondary'"
+                  th:text="${atuacao.padrinho} ? 'Padrinho/madrinha' : 'Não é padrinho'"></span>
+            <span th:if="${!atuacao.ativo}" class="badge bg-secondary">Inativo</span>
+        </span>
+        <span class="text-muted small">
+            Última atividade:
+            <span th:text="${atuacao.ultimaAtividade != null ? #temporals.format(atuacao.ultimaAtividade, 'dd/MM/yyyy HH:mm') : 'sem registro'}"></span>
+        </span>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Dados</strong></div>
+                <div class="card-body row row-cols-1 row-cols-md-2 g-2">
+                    <div><strong>CPF:</strong> <span th:text="${atuacao.cpf != null ? #cpf.mascararConformePerfil(atuacao.cpf) : '—'}">—</span></div>
+                    <div><strong>Telefone:</strong> <span th:text="${atuacao.telefone ?: '—'}">—</span></div>
+                    <div><strong>E-mail:</strong> <span th:text="${atuacao.email ?: '—'}">—</span></div>
+                    <div><strong>Área de atuação:</strong> <span th:text="${atuacao.areaAtuacao ?: '—'}">—</span></div>
+                    <div><strong>Setor:</strong> <span th:text="${atuacao.setor ?: '—'}">—</span></div>
+                    <div><strong>Disponibilidade:</strong> <span th:text="${atuacao.disponibilidade ?: '—'}">—</span></div>
+                    <div class="col-12" th:if="${atuacao.observacao}"><strong>Observação:</strong> <span th:text="${atuacao.observacao}">—</span></div>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3" th:if="${atuacao.ativo}">
+                <div class="card-header"><strong>Inativar voluntário</strong></div>
+                <div class="card-body">
+                    <p class="text-muted small">Voluntário inativado continua aparecendo nas retiradas já registradas.</p>
+                    <form th:action="@{/beneficios/voluntarios/{id}/inativar(id=${atuacao.id})}" method="post"
+                          onsubmit="return confirm('Confirma a inativação deste voluntário?');">
+                        <div class="mb-2">
+                            <textarea name="motivo" class="form-control" rows="2" placeholder="Motivo da inativação" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-slash-circle"></i> Inativar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Entregas por mês</strong></div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(atuacao.entregasPorMes)}" class="text-muted small">Nenhuma entrega registrada.</div>
+                    <table class="table table-sm mb-0" th:unless="${#lists.isEmpty(atuacao.entregasPorMes)}">
+                        <tbody>
+                        <tr th:each="entrega : ${atuacao.entregasPorMes}">
+                            <td th:text="${#temporals.format(entrega.mes, 'MM/yyyy')}">—</td>
+                            <td th:text="${entrega.quantidade} + ' entrega(s)'">—</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3" th:if="${atuacao.padrinho}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Apadrinhados</strong>
+                    <a th:href="@{/beneficios/padrinhos/{id}/apadrinhados(id=${atuacao.id})}" class="btn btn-sm btn-beneficios-secundario">Ver tela completa</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(atuacao.apadrinhados)}" class="text-muted small">Nenhum apadrinhado atualmente.</div>
+                    <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(atuacao.apadrinhados)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="apadrinhado : ${atuacao.apadrinhados}">
+                            <span th:text="${apadrinhado.nome}">Nome</span>
+                            <span class="badge" th:classappend="${apadrinhado.retirouMesAtual} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${apadrinhado.retirouMesAtual} ? 'Retirou' : 'Não retirou'"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

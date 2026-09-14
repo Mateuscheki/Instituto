@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Campos reutilizáveis do módulo, no padrão visual descrito no CLAUDE.md:
+  label em caixa alta / cinza-azulado, placeholder de exemplo. Recebem
+  id/nome/valor como parâmetros (em vez de usar th:field diretamente) para
+  serem genéricos o bastante para qualquer form* do módulo — a página que
+  inclui o fragmento é quem decide o binding (o `name` aqui já é o suficiente
+  para o Spring MVC popular o objeto de formulário na volta do POST).
+
+  Os campos de CPF/telefone/CEP só ganham a classe de máscara
+  (`mascara-cpf`/`mascara-telefone`/`mascara-cep`) — quem aplica a máscara de
+  fato é static/js/beneficios.js.
+-->
+
+<div th:fragment="campoTexto(id, nome, label, valor, obrigatorio, placeholder)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">Campo</label>
+    <input type="text" class="form-control" th:id="${id}" th:name="${nome}" th:value="${valor}"
+           th:placeholder="${placeholder}" th:required="${obrigatorio}">
+</div>
+
+<div th:fragment="campoCpf(id, nome, label, valor, obrigatorio)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">CPF</label>
+    <input type="text" class="form-control mascara-cpf" th:id="${id}" th:name="${nome}" th:value="${valor}"
+           placeholder="Ex.: 123.456.789-00" inputmode="numeric" maxlength="14" th:required="${obrigatorio}">
+</div>
+
+<div th:fragment="campoTelefone(id, nome, label, valor, obrigatorio)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">Telefone</label>
+    <input type="text" class="form-control mascara-telefone" th:id="${id}" th:name="${nome}" th:value="${valor}"
+           placeholder="Ex.: (62) 99999-9999" inputmode="numeric" maxlength="15" th:required="${obrigatorio}">
+</div>
+
+<div th:fragment="campoCep(id, nome, label, valor, obrigatorio)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">CEP</label>
+    <input type="text" class="form-control mascara-cep" th:id="${id}" th:name="${nome}" th:value="${valor}"
+           placeholder="Ex.: 74000-000" inputmode="numeric" maxlength="9" th:required="${obrigatorio}">
+</div>
+
+<div th:fragment="campoData(id, nome, label, valor, obrigatorio)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">Data</label>
+    <input type="date" class="form-control" th:id="${id}" th:name="${nome}" th:value="${valor}" th:required="${obrigatorio}">
+</div>
+
+<!-- opcoes: Map<String,String> (valor -> rótulo), ex.: um LinkedHashMap montado a partir de um enum -->
+<div th:fragment="campoSelect(id, nome, label, opcoes, valorSelecionado, obrigatorio)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">Campo</label>
+    <select class="form-select" th:id="${id}" th:name="${nome}" th:required="${obrigatorio}">
+        <option value="">Selecione...</option>
+        <option th:each="opcao : ${opcoes}"
+                th:value="${opcao.key}"
+                th:text="${opcao.value}"
+                th:selected="${opcao.key == valorSelecionado}"></option>
+    </select>
+</div>
+
+<div th:fragment="campoTextarea(id, nome, label, valor, linhas)" class="mb-3">
+    <label th:for="${id}" class="form-label campo-label" th:text="${label}">Campo</label>
+    <textarea class="form-control" th:id="${id}" th:name="${nome}" th:rows="${linhas} ?: 3" th:text="${valor}"></textarea>
+</div>
+
+<!--
+  Reposta todos os campos de um Form como <input type="hidden">, sem repetir
+  campo a campo na view (ver BeneficiarioController + util/FormUtils, que
+  monta o Map via reflexão). Uso:
+  <div th:replace="~{fragments/campos :: hiddensDoForm(campos=${camposOcultos})}"></div>
+-->
+<th:block th:fragment="hiddensDoForm(campos)">
+    <input type="hidden" th:each="campo : ${campos}" th:name="${campo.key}" th:value="${campo.value}">
+</th:block>
+
+</body>
+</html>

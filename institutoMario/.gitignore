@@ -4,6 +4,13 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Segredos ###
+# .env tinha senha de banco comitada no histórico — CLAUDE.md proíbe isso.
+# Use .env.example (versionado, com placeholders) como referência.
+.env
+.env.*
+!.env.example
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,3 +38,4 @@ build/
 
 ### VS Code ###
 .vscode/
+.claude.md

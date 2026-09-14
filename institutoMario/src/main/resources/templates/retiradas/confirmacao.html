@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Confirmar retirada</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <span class="beneficios-badge-secao">CONFIRMAÇÃO NECESSÁRIA</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Confirmar retirada</h1>
+
+    <div th:if="${erroConfirmacao}" class="alert alert-danger">
+        <i class="bi bi-exclamation-octagon-fill me-2"></i>
+        <span th:text="${erroConfirmacao}"></span>
+    </div>
+
+    <div class="beneficios-faixa-status">
+        <i class="bi bi-info-circle me-1"></i>
+        Nenhum aviso abaixo impede o registro — avisos de <strong>alta severidade</strong> exigem que você marque
+        "confirmo e autorizo" e informe uma justificativa antes de salvar.
+    </div>
+
+    <form th:action="@{/beneficios/retiradas/confirmar}" method="post">
+        <div th:replace="~{fragments/campos :: hiddensDoForm(campos=${camposOcultos})}"></div>
+
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Resumo da retirada</strong></div>
+            <div class="card-body row row-cols-1 row-cols-md-3 g-2">
+                <div><strong>CPF do beneficiário:</strong> <span th:text="${retiradaForm.cpfBeneficiario}">—</span></div>
+                <div><strong>Mês de referência:</strong> <span th:text="${retiradaForm.mesReferencia}">—</span></div>
+                <div><strong>Data/hora:</strong> <span th:text="${retiradaForm.dataRetirada}">—</span></div>
+                <div><strong>Quantidade de cestas:</strong> <span th:text="${retiradaForm.quantidadeCestas}">—</span></div>
+                <div><strong>Retirante:</strong> <span th:text="${retiradaForm.retiranteNome}">—</span></div>
+                <div><strong>Tipo de retirante:</strong> <span th:text="${retiradaForm.tipoRetirante}">—</span></div>
+            </div>
+        </div>
+
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Avisos de confirmação</strong></div>
+            <div class="card-body">
+
+                <div th:if="${#lists.isEmpty(avisos)}" class="text-muted">Nenhum aviso.</div>
+
+                <h6 class="text-danger" th:if="${exigeJustificativa}">Alta severidade — exige confirmação</h6>
+                <div th:each="aviso : ${avisos}" th:if="${aviso.severidade.name() == 'ALTA'}" class="alert alert-danger">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="avisosConfirmados"
+                               th:value="${aviso.codigo}" th:id="'aviso_' + ${aviso.codigo}"
+                               th:checked="${avisosJaConfirmados != null and #lists.contains(avisosJaConfirmados, aviso.codigo)}">
+                        <label class="form-check-label" th:for="'aviso_' + ${aviso.codigo}">
+                            <strong>Confirmo e autorizo:</strong> <span th:text="${aviso.mensagem}">Mensagem</span>
+                            <a th:if="${aviso.referenciaId != null}"
+                               th:href="@{/beneficios/beneficiarios/{id}(id=${aviso.referenciaId})}" target="_blank">(ver cadastro)</a>
+                        </label>
+                    </div>
+                    <div th:if="${avisosDestacados != null and avisosDestacados.contains(aviso)}" class="text-danger small mt-1 fw-bold">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Confirme este aviso antes de prosseguir.
+                    </div>
+                </div>
+
+                <h6 class="text-warning mt-3">Atenção</h6>
+                <div th:if="${avisos.?[severidade.name() == 'ATENCAO'].isEmpty()}" class="text-muted small">Nenhum.</div>
+                <div th:each="aviso : ${avisos}" th:if="${aviso.severidade.name() == 'ATENCAO'}" class="alert alert-warning">
+                    <span th:text="${aviso.mensagem}">Mensagem</span>
+                    <a th:if="${aviso.referenciaId != null}"
+                       th:href="@{/beneficios/beneficiarios/{id}(id=${aviso.referenciaId})}" target="_blank">(ver cadastro)</a>
+                </div>
+
+                <h6 class="text-info mt-3">Informativo</h6>
+                <div th:if="${avisos.?[severidade.name() == 'INFO'].isEmpty()}" class="text-muted small">Nenhum.</div>
+                <div th:each="aviso : ${avisos}" th:if="${aviso.severidade.name() == 'INFO'}" class="alert alert-info">
+                    <span th:text="${aviso.mensagem}">Mensagem</span>
+                    <a th:if="${aviso.referenciaId != null}"
+                       th:href="@{/beneficios/beneficiarios/{id}(id=${aviso.referenciaId})}" target="_blank">(ver cadastro)</a>
+                </div>
+
+                <div class="mb-2 mt-3" th:if="${exigeJustificativa}">
+                    <label for="justificativa" class="form-label campo-label">Justificativa (obrigatória)</label>
+                    <textarea id="justificativa" name="justificativa" class="form-control" rows="2"
+                              th:text="${justificativaDigitada}"
+                              placeholder="Explique por que está prosseguindo mesmo com o(s) aviso(s) de alta severidade."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" formaction="/beneficios/retiradas/voltar" class="btn btn-beneficios-secundario">
+            <i class="bi bi-arrow-left"></i> Voltar e corrigir
+        </button>
+        <button type="submit" class="btn btn-beneficios-primario">
+            <i class="bi bi-check-circle"></i> Confirmar e salvar
+        </button>
+    </form>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Apadrinhados</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0" th:text="'Apadrinhados de ' + ${voluntarioNome}">Apadrinhados</h1>
+        <a th:href="@{/beneficios/voluntarios/{id}(id=${voluntarioId})}" class="btn btn-beneficios-secundario">
+            <i class="bi bi-arrow-left"></i> Voltar ao voluntário
+        </a>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Situação do mês</th>
+                <th>Cadastro</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="apadrinhado : ${apadrinhados}">
+                <td th:text="${apadrinhado.nome}">—</td>
+                <td th:text="${#cpf.mascararConformePerfil(apadrinhado.cpf)}">—</td>
+                <td>
+                    <span class="badge" th:classappend="${apadrinhado.retirouMesAtual} ? 'bg-success' : 'bg-secondary'"
+                          th:text="${apadrinhado.retirouMesAtual} ? 'Já retirou' : 'Ainda não retirou'"></span>
+                </td>
+                <td>
+                    <span class="badge" th:classappend="${apadrinhado.ativo} ? 'bg-success' : 'bg-secondary'"
+                          th:text="${apadrinhado.ativo} ? 'Ativo' : 'Inativo'"></span>
+                </td>
+                <td>
+                    <a th:href="@{/beneficios/beneficiarios/{id}(id=${apadrinhado.beneficiarioId})}" class="btn btn-sm btn-beneficios-primario">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(apadrinhados)}">
+                <td colspan="5" class="text-center">Nenhum apadrinhado atualmente.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8"><title>Inativos recorrentes</title>
+</head>
+<body>
+<div class="no-print" th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3 no-print" id="menu-open-toggle"><i class="bi bi-list"></i></button>
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Inativos recorrentes — candidatos a revisão</h1>
+
+    <div class="beneficios-card card mb-3 no-print">
+        <div class="card-body">
+            <form th:action="@{/beneficios/relatorios/inativos-recorrentes}" method="get" class="row g-2 align-items-end">
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Meses sem retirar</label>
+                    <input type="number" name="dias" class="form-control" th:value="${meses}" min="1">
+                </div>
+                <div class="col-md-2"><button type="submit" class="btn btn-beneficios-primario w-100">Filtrar</button></div>
+                <div class="col-md-4 ms-auto d-flex gap-2 justify-content-end">
+                    <a class="btn btn-beneficios-secundario btn-sm" th:href="@{/beneficios/relatorios/inativos-recorrentes(dias=${meses},formato='csv')}"><i class="bi bi-filetype-csv"></i> CSV</a>
+                    <a class="btn btn-beneficios-secundario btn-sm" th:href="@{/beneficios/relatorios/inativos-recorrentes(dias=${meses},formato='xlsx')}"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header"><tr><th>Nome</th><th>CPF</th><th>Última retirada</th><th>Meses sem retirar</th><th>Ações</th></tr></thead>
+            <tbody>
+            <tr th:each="item : ${pagina.content}">
+                <td th:text="${item.nome}">—</td>
+                <td th:text="${#cpf.mascararConformePerfil(item.cpf)}">—</td>
+                <td th:text="${item.ultimaRetirada != null ? #temporals.format(item.ultimaRetirada, 'MM/yyyy') : 'nunca'}">—</td>
+                <td th:text="${item.mesesSemRetirar}">0</td>
+                <td><a th:href="@{/beneficios/beneficiarios/{id}(id=${item.beneficiarioId})}" class="btn btn-sm btn-beneficios-primario"><i class="bi bi-person-lines-fill"></i></a></td>
+            </tr>
+            <tr th:if="${pagina.content.isEmpty()}"><td colspan="5" class="text-center">Nenhum registro encontrado para o período.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

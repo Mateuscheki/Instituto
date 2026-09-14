@@ -61,8 +61,28 @@ public class SecurityConfig {
     }
 
 
+    // O módulo Benefícios lida com dado sensível (CPF, renda, endereço) via
+    // formulário HTML tradicional (nunca API/JSON — ver CLAUDE.md do módulo),
+    // então precisa de CSRF LIGADO, diferente do resto da aplicação web
+    // (webSecurityChain, abaixo, desliga CSRF por decisão pré-existente do
+    // projeto). Por isso ganha sua própria chain, escopada só a
+    // "/beneficios/**", em vez de mexer no comportamento global.
     @Bean
     @Order(2)
+    public SecurityFilterChain beneficiosSecurityChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .securityMatcher("/beneficios/**")
+                .cors(Customizer.withDefaults())
+                .headers(header -> header.frameOptions(config -> config.sameOrigin()))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().hasRole("ADM")
+                )
+                .formLogin(login -> login.loginPage("/login"))
+                .build();
+    }
+
+    @Bean
+    @Order(3)
     public SecurityFilterChain webSecurityChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
