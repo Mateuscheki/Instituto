@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Buscar beneficiário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-card card mb-4">
+        <div class="card-body">
+            <span class="beneficios-badge-secao">CADASTRO E ATENDIMENTO</span>
+            <h1 class="beneficios-titulo-secao h4">Buscar beneficiário</h1>
+            <p class="text-muted">Localize um cadastro pelo CPF (com ou sem pontuação).</p>
+
+            <form th:action="@{/beneficios/beneficiarios/busca}" method="get" class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label for="cpf" class="form-label campo-label">CPF</label>
+                    <input type="text" id="cpf" name="cpf" class="form-control mascara-cpf"
+                           th:value="${cpfPesquisado}" placeholder="Ex.: 123.456.789-00" inputmode="numeric" maxlength="14">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-beneficios-primario">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a th:href="@{/beneficios/beneficiarios/busca}" class="btn btn-beneficios-secundario">
+                        <i class="bi bi-x-circle"></i> Limpar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${resultado != null}" class="beneficios-card card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h2 class="h5 mb-1" th:text="${resultado.nome}">Nome</h2>
+                    <div class="text-muted" th:text="${#cpf.mascararConformePerfil(resultado.cpf)}">CPF</div>
+                    <span class="badge mt-2" th:classappend="${resultado.status.cssBadge}" th:text="${resultado.status.descricao}">Status</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/beneficios/beneficiarios/{id}(id=${resultado.id})}" class="btn btn-beneficios-primario">
+                        <i class="bi bi-person-lines-fill"></i> Ver ficha
+                    </a>
+                    <a th:href="@{/beneficios/beneficiarios/{id}/editar(id=${resultado.id})}" class="btn btn-beneficios-secundario">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${naoEncontrado != null and naoEncontrado}" class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-info-circle me-2"></i> Nenhum beneficiário encontrado com este CPF.</span>
+        <a th:href="@{/beneficios/beneficiarios/novo(cpf=${cpfPesquisado})}" class="btn btn-beneficios-primario btn-sm">
+            <i class="bi bi-person-plus-fill"></i> Cadastrar novo beneficiário
+        </a>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

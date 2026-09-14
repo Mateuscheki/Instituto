@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Voluntários</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0">Voluntários</h1>
+        <a th:href="@{/beneficios/voluntarios/novo}" class="btn btn-beneficios-primario">
+            <i class="bi bi-person-plus-fill"></i> Novo voluntário
+        </a>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-card card mb-3">
+        <div class="card-body">
+            <form th:action="@{/beneficios/voluntarios}" method="get" class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label campo-label">Nome</label>
+                    <input type="text" name="nome" class="form-control" th:value="${filtro.nome}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">CPF</label>
+                    <input type="text" name="cpf" class="form-control mascara-cpf" th:value="${filtro.cpf}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Área de atuação</label>
+                    <input type="text" name="areaAtuacao" class="form-control" th:value="${filtro.areaAtuacao}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label campo-label">Setor</label>
+                    <input type="text" name="setor" class="form-control" th:value="${filtro.setor}">
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label campo-label">Padrinho</label>
+                    <select name="isPadrinho" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="true" th:selected="${filtro.isPadrinho == true}">Sim</option>
+                        <option value="false" th:selected="${filtro.isPadrinho == false}">Não</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label campo-label">Ativo</label>
+                    <select name="ativo" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="true" th:selected="${filtro.ativo == true}">Sim</option>
+                        <option value="false" th:selected="${filtro.ativo == false}">Não</option>
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-beneficios-primario w-100"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-header">
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Área</th>
+                <th>Setor</th>
+                <th>Padrinho?</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${pagina.content}">
+                <td th:text="${item.nome}">—</td>
+                <td th:text="${item.cpf != null ? #cpf.mascararConformePerfil(item.cpf) : '—'}">—</td>
+                <td th:text="${item.telefone ?: '—'}">—</td>
+                <td th:text="${item.areaAtuacao ?: '—'}">—</td>
+                <td th:text="${item.setor ?: '—'}">—</td>
+                <td><span class="badge" th:classappend="${item.padrinho} ? 'bg-success' : 'bg-secondary'" th:text="${item.padrinho} ? 'Sim' : 'Não'"></span></td>
+                <td><span class="badge" th:classappend="${item.ativo} ? 'bg-success' : 'bg-secondary'" th:text="${item.ativo} ? 'Sim' : 'Não'"></span></td>
+                <td>
+                    <a th:href="@{/beneficios/voluntarios/{id}(id=${item.id})}" class="btn btn-sm btn-beneficios-primario" title="Ver atuação">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </a>
+                    <a th:href="@{/beneficios/voluntarios/{id}/editar(id=${item.id})}" class="btn btn-sm btn-warning" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a th:if="${item.padrinho}" th:href="@{/beneficios/padrinhos/{id}/apadrinhados(id=${item.id})}" class="btn btn-sm btn-beneficios-secundario" title="Apadrinhados">
+                        <i class="bi bi-heart-fill"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${pagina.content.isEmpty()}">
+                <td colspan="8" class="text-center">Nenhum voluntário encontrado.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${pagina.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/beneficios/voluntarios(page=${pagina.number - 1}, nome=${filtro.nome}, cpf=${filtro.cpf}, areaAtuacao=${filtro.areaAtuacao}, setor=${filtro.setor}, isPadrinho=${filtro.isPadrinho}, ativo=${filtro.ativo})}">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="'Página ' + ${pagina.number + 1} + ' de ' + ${pagina.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/beneficios/voluntarios(page=${pagina.number + 1}, nome=${filtro.nome}, cpf=${filtro.cpf}, areaAtuacao=${filtro.areaAtuacao}, setor=${filtro.setor}, isPadrinho=${filtro.isPadrinho}, ativo=${filtro.ativo})}">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

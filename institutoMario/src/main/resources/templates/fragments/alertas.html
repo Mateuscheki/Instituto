@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Mensagens padrão do módulo. Toda gravação segue PRG (Post/Redirect/Get,
+  ver CLAUDE.md): o controller redireciona e manda "sucesso"/"erro" via
+  RedirectAttributes.addFlashAttribute — nunca renderiza a mensagem direto
+  na resposta do POST. "avisos" é uma lista de confirmações pendentes
+  (mesmo endereço, prazo vencido etc.) que o operador precisa reconhecer
+  antes de prosseguir — ver princípio de validação por confirmação no
+  CLAUDE.md do módulo; nesta etapa de fundação o fragmento já existe, mas
+  ninguém ainda popula essa lista.
+-->
+<div th:fragment="alertas">
+
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${sucesso}">Operação realizada com sucesso.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-x-circle-fill me-2"></i>
+        <span th:text="${erro}">Não foi possível concluir a operação.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <div th:if="${avisos != null and !#lists.isEmpty(avisos)}">
+        <div th:each="aviso : ${avisos}"
+             class="alert alert-warning alert-dismissible fade show"
+             th:classappend="${aviso.severidade != null and aviso.severidade.name() == 'ALTA'} ? 'alert-danger' : (${aviso.severidade != null and aviso.severidade.name() == 'INFO'} ? 'alert-info' : 'alert-warning')"
+             role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${aviso.mensagem}">Aviso de confirmação.</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Benefícios</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-faixa-status">
+        <i class="bi bi-shield-check me-1"></i>
+        Perfil ativo: <strong>Administrador (ADM)</strong>. Dados sensíveis liberados conforme permissão.
+    </div>
+
+    <div class="beneficios-card card mb-4">
+        <div class="card-body">
+            <span class="beneficios-badge-secao">MÓDULO BENEFÍCIOS</span>
+            <h1 class="beneficios-titulo-secao h3">Cestas Básicas</h1>
+            <p class="text-muted mb-0">
+                Cadastro de beneficiários, controle da retirada mensal, voluntários/padrinhos
+                e relatórios de acompanhamento do programa.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/beneficiarios/busca}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h2 class="h6 mb-1">Buscar beneficiário</h2>
+                <p class="text-muted small mb-0">Localizar cadastro por CPF.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/beneficiarios/novo}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <h2 class="h6 mb-1">Novo cadastro</h2>
+                <p class="text-muted small mb-0">Cadastrar um novo beneficiário no programa.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/retiradas/registrar}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-basket2-fill"></i>
+                </div>
+                <h2 class="h6 mb-1">Registrar retirada</h2>
+                <p class="text-muted small mb-0">Registrar a retirada mensal de uma cesta básica.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/retiradas}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <h2 class="h6 mb-1">Histórico de retiradas</h2>
+                <p class="text-muted small mb-0">Consultar retiradas já registradas, com filtros.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/voluntarios}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-heart-fill"></i>
+                </div>
+                <h2 class="h6 mb-1">Voluntários</h2>
+                <p class="text-muted small mb-0">Cadastro de voluntários e padrinhos/madrinhas.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios}" class="beneficios-atalho">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+                <h2 class="h6 mb-1">Relatórios</h2>
+                <p class="text-muted small mb-0">Acompanhamento e exportação do programa.</p>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="beneficios-card card mt-4">
+        <div class="card-header"><strong>Administração do módulo</strong></div>
+        <div class="card-body">
+            <p class="text-muted">
+                No dia 1º de cada mês (00:05), o sistema recalcula sozinho quem estava
+                "já retirou" para "apto" de novo, e marca como "prazo encerrado" quem venceu o benefício.
+                Use o botão abaixo só se precisar forçar esse recálculo antes da virada automática.
+            </p>
+            <form th:action="@{/beneficios/admin/recalcular-status}" method="post"
+                  onsubmit="return confirm('Confirma o recálculo manual de status de todos os beneficiários?');">
+                <button type="submit" class="btn btn-beneficios-secundario">
+                    <i class="bi bi-arrow-repeat"></i> Recalcular status agora
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

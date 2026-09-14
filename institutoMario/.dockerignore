@@ -5,3 +5,6 @@ target/
 docker-compose.yml
 Dockerfile
 README.md
+.env
+.env.*
+!.env.example

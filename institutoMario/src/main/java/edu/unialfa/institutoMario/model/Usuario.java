@@ -9,8 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Data
@@ -46,13 +47,24 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(
-                switch (tipoUsuario.getId().intValue()) {
-                    case 1 -> "ROLE_ADMIN";
-                    case 2 -> "ROLE_PROFESSOR";
-                    default -> "ROLE_ALUNO";
-                }
-        ));
+        String roleBase = switch (tipoUsuario.getId().intValue()) {
+            case 1 -> "ROLE_ADMIN";
+            case 2 -> "ROLE_PROFESSOR";
+            default -> "ROLE_ALUNO";
+        };
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(roleBase));
+
+        // O módulo Benefícios usa perfis próprios (ADM/GESTAO/ATENDIMENTO —
+        // ver CLAUDE.md do módulo). Nesta primeira etapa ainda não existe um
+        // cadastro de perfis dedicado a Benefícios, então o Administrador do
+        // sistema (tipoUsuario=1) também assume o papel de ADM do módulo.
+        if ("ROLE_ADMIN".equals(roleBase)) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADM"));
+        }
+
+        return authorities;
     }
 
     @Override

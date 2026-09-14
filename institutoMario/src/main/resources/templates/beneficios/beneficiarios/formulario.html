@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Beneficiário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <span class="beneficios-badge-secao">CADASTRO E ATENDIMENTO</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3" th:text="${tituloPagina}">Beneficiário</h1>
+
+    <form th:action="@{/beneficios/beneficiarios/salvar}" th:object="${beneficiarioForm}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <!-- Identificação -->
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Identificação</strong></div>
+            <div class="card-body row">
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoCpf(id='cpf', nome='cpf', label='CPF', valor=${beneficiarioForm.cpf}, obrigatorio=true)}"></div>
+                    <div th:if="${#fields.hasErrors('cpf')}" class="text-danger small mt-n2 mb-2" th:errors="*{cpf}">Erro</div>
+                    <div th:if="${cpfDuplicadoId != null}" class="small mt-n2 mb-2">
+                        <a th:href="@{/beneficios/beneficiarios/{id}(id=${cpfDuplicadoId})}">Abrir cadastro existente</a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='nome', nome='nome', label='Nome completo', valor=${beneficiarioForm.nome}, obrigatorio=true, placeholder='Ex.: Maria da Silva')}"></div>
+                    <div th:if="${#fields.hasErrors('nome')}" class="text-danger small mt-n2 mb-2" th:errors="*{nome}">Erro</div>
+                </div>
+
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoData(id='dataNascimento', nome='dataNascimento', label='Data de nascimento', valor=${beneficiarioForm.dataNascimento}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('dataNascimento')}" class="text-danger small mt-n2 mb-2" th:errors="*{dataNascimento}">Erro</div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTelefone(id='telefone', nome='telefone', label='Telefone', valor=${beneficiarioForm.telefone}, obrigatorio=false)}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='email', nome='email', label='E-mail', valor=${beneficiarioForm.email}, obrigatorio=false, placeholder='Ex.: nome@email.com')}"></div>
+                    <div th:if="${#fields.hasErrors('email')}" class="text-danger small mt-n2 mb-2" th:errors="*{email}">Erro</div>
+                </div>
+
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='nomeMae', nome='nomeMae', label='Nome da mãe', valor=${beneficiarioForm.nomeMae}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='nomeConjuge', nome='nomeConjuge', label='Nome do cônjuge', valor=${beneficiarioForm.nomeConjuge}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoCpf(id='cpfConjuge', nome='cpfConjuge', label='CPF do cônjuge', valor=${beneficiarioForm.cpfConjuge}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('cpfConjuge')}" class="text-danger small mt-n2 mb-2" th:errors="*{cpfConjuge}">Erro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Composição familiar -->
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Composição familiar</strong></div>
+            <div class="card-body row">
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='pessoasResidencia', nome='pessoasResidencia', label='Pessoas na residência', valor=${beneficiarioForm.pessoasResidencia}, obrigatorio=false, placeholder='Ex.: 4')}"></div>
+                    <div th:if="${#fields.hasErrors('pessoasResidencia')}" class="text-danger small mt-n2 mb-2" th:errors="*{pessoasResidencia}">Erro</div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoSelect(id='temFilhos', nome='temFilhos', label='Tem filhos?', opcoes=${respostaSimNaoOpcoes}, valorSelecionado=${beneficiarioForm.temFilhos}, obrigatorio=false)}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='quantidadeFilhos', nome='quantidadeFilhos', label='Quantos filhos', valor=${beneficiarioForm.quantidadeFilhos}, obrigatorio=false, placeholder='Ex.: 2')}"></div>
+                    <div th:if="${#fields.hasErrors('quantidadeFilhos')}" class="text-danger small mt-n2 mb-2" th:errors="*{quantidadeFilhos}">Erro</div>
+                </div>
+                <div class="col-md-3">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='idadesFilhos', nome='idadesFilhos', label='Idades dos filhos', valor=${beneficiarioForm.idadesFilhos}, obrigatorio=false, placeholder='Ex.: 4 anos, 8 anos e 12 anos')}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoSelect(id='filhosComDeficiencia', nome='filhosComDeficiencia', label='Filhos com deficiência?', opcoes=${respostaSimNaoOpcoes}, valorSelecionado=${beneficiarioForm.filhosComDeficiencia}, obrigatorio=false)}"></div>
+                </div>
+                <div class="col-md-8">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='descricaoDeficienciaFilhos', nome='descricaoDeficienciaFilhos', label='Descrição da deficiência (filhos)', valor=${beneficiarioForm.descricaoDeficienciaFilhos}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoSelect(id='familiarComDeficiencia', nome='familiarComDeficiencia', label='Outro familiar com deficiência?', opcoes=${respostaSimNaoOpcoes}, valorSelecionado=${beneficiarioForm.familiarComDeficiencia}, obrigatorio=false)}"></div>
+                </div>
+                <div class="col-md-8">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='descricaoDeficienciaFamiliar', nome='descricaoDeficienciaFamiliar', label='Descrição da deficiência (familiar)', valor=${beneficiarioForm.descricaoDeficienciaFamiliar}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoSelect(id='temTrabalho', nome='temTrabalho', label='Tem trabalho?', opcoes=${respostaSimNaoOpcoes}, valorSelecionado=${beneficiarioForm.temTrabalho}, obrigatorio=false)}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='rendaFamiliar', nome='rendaFamiliar', label='Renda familiar (R$)', valor=${beneficiarioForm.rendaFamiliar}, obrigatorio=false, placeholder='Ex.: 1200,00')}"></div>
+                    <div th:if="${#fields.hasErrors('rendaFamiliar')}" class="text-danger small mt-n2 mb-2" th:errors="*{rendaFamiliar}">Erro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="beneficios-card card mb-3">
+            <div class="card-header"><strong>Endereço</strong></div>
+            <div class="card-body row">
+                <div class="col-12">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='enderecoCompleto', nome='enderecoCompleto', label='Endereço completo (texto livre)', valor=${beneficiarioForm.enderecoCompleto}, obrigatorio=false, placeholder='Preencha se preferir digitar tudo junto')}"></div>
+                </div>
+                <div class="col-md-2">
+                    <div th:replace="~{fragments/campos :: campoCep(id='cep', nome='cep', label='CEP', valor=${beneficiarioForm.cep}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('cep')}" class="text-danger small mt-n2 mb-2" th:errors="*{cep}">Erro</div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='rua', nome='rua', label='Rua', valor=${beneficiarioForm.rua}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-2">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='numero', nome='numero', label='Número', valor=${beneficiarioForm.numero}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-2">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='complemento', nome='complemento', label='Complemento', valor=${beneficiarioForm.complemento}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='bairro', nome='bairro', label='Bairro', valor=${beneficiarioForm.bairro}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='cidade', nome='cidade', label='Cidade', valor=${beneficiarioForm.cidade}, obrigatorio=false, placeholder='')}"></div>
+                </div>
+                <div class="col-md-2">
+                    <div th:replace="~{fragments/campos :: campoTexto(id='uf', nome='uf', label='UF', valor=${beneficiarioForm.uf}, obrigatorio=false, placeholder='Ex.: GO')}"></div>
+                    <div th:if="${#fields.hasErrors('uf')}" class="text-danger small mt-n2 mb-2" th:errors="*{uf}">Erro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefício -->
+        <div class="beneficios-card card mb-4">
+            <div class="card-header"><strong>Benefício</strong></div>
+            <div class="card-body row">
+                <div class="col-md-4">
+                    <label for="padrinhoId" class="form-label campo-label">Padrinho/madrinha</label>
+                    <select id="padrinhoId" name="padrinhoId" class="form-select">
+                        <option value="">Nenhum</option>
+                        <option th:each="padrinho : ${padrinhos}"
+                                th:value="${padrinho.id}" th:text="${padrinho.nome}"
+                                th:selected="${padrinho.id.toString() == beneficiarioForm.padrinhoId}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('padrinhoId')}" class="text-danger small mt-1" th:errors="*{padrinhoId}">Erro</div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoData(id='prazoFinalBeneficio', nome='prazoFinalBeneficio', label='Prazo final do benefício', valor=${beneficiarioForm.prazoFinalBeneficio}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('prazoFinalBeneficio')}" class="text-danger small mt-n2 mb-2" th:errors="*{prazoFinalBeneficio}">Erro</div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{fragments/campos :: campoSelect(id='status', nome='status', label='Status', opcoes=${statusOpcoes}, valorSelecionado=${beneficiarioForm.status}, obrigatorio=false)}"></div>
+                    <div th:if="${#fields.hasErrors('status')}" class="text-danger small mt-n2 mb-2" th:errors="*{status}">Erro</div>
+                    <div class="form-text">Em branco, um novo cadastro entra como "Aguardando análise".</div>
+                </div>
+                <div class="col-12">
+                    <div th:replace="~{fragments/campos :: campoTextarea(id='observacao', nome='observacao', label='Observação', valor=${beneficiarioForm.observacao}, linhas=3)}"></div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-beneficios-primario">
+            <i class="bi bi-save"></i> Salvar
+        </button>
+        <a th:href="@{/beneficios/beneficiarios}" class="btn btn-beneficios-secundario ms-2">Cancelar</a>
+    </form>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        beneficiosToggleDependente('#temFilhos', '#quantidadeFilhos', ['SIM']);
+        beneficiosToggleDependente('#temFilhos', '#idadesFilhos', ['SIM']);
+        beneficiosLigarBuscaCep('#cep', { rua: '#rua', bairro: '#bairro', cidade: '#cidade', uf: '#uf' });
+    });
+</script>
+</body>
+</html>

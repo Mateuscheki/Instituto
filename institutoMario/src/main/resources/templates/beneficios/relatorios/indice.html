@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Relatórios</title>
+</head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle"><i class="bi bi-list"></i></button>
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <span class="beneficios-badge-secao">ANÁLISE E ACOMPANHAMENTO</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Relatórios</h1>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/dashboard}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-speedometer2"></i></div>
+                <h2 class="h6 mb-1">Dashboard</h2>
+                <p class="text-muted small mb-0">Painel geral do mês: adesão, cestas, pendências.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/retiradas-mensais}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-graph-up"></i></div>
+                <h2 class="h6 mb-1">Retiradas mensais</h2>
+                <p class="text-muted small mb-0">Série histórica de retiradas e cestas.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/pendentes}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-exclamation-circle"></i></div>
+                <h2 class="h6 mb-1">Pendentes do mês</h2>
+                <p class="text-muted small mb-0">Quem ainda não retirou — para acionar antes do fim do mês.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/por-padrinho}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-heart-fill"></i></div>
+                <h2 class="h6 mb-1">Por padrinho</h2>
+                <p class="text-muted small mb-0">Apadrinhados, retiradas e adesão por padrinho.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/por-voluntario}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-person-badge"></i></div>
+                <h2 class="h6 mb-1">Por voluntário</h2>
+                <p class="text-muted small mb-0">Entregas por voluntário, área e setor.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/por-regiao}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-geo-alt-fill"></i></div>
+                <h2 class="h6 mb-1">Por região</h2>
+                <p class="text-muted small mb-0">Distribuição geográfica de beneficiários e retiradas.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/perfil-social}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-people-fill"></i></div>
+                <h2 class="h6 mb-1">Perfil social</h2>
+                <p class="text-muted small mb-0">Composição familiar e faixas etárias do público.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/prazos-vencendo}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-hourglass-split"></i></div>
+                <h2 class="h6 mb-1">Prazos vencendo</h2>
+                <p class="text-muted small mb-0">Benefícios a vencer e vencidos.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/inativos-recorrentes}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-person-dash"></i></div>
+                <h2 class="h6 mb-1">Inativos recorrentes</h2>
+                <p class="text-muted small mb-0">Ativos sem retirada há vários meses.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/retiradas-por-terceiros}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-people"></i></div>
+                <h2 class="h6 mb-1">Retiradas por terceiros</h2>
+                <p class="text-muted small mb-0">Controle interno: quem não é o próprio beneficiário.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/confirmacoes}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-shield-check"></i></div>
+                <h2 class="h6 mb-1">Confirmações (conformidade)</h2>
+                <p class="text-muted small mb-0">Todo aviso confirmado no período, com justificativa.</p>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/beneficios/relatorios/voluntarios}" class="beneficios-atalho">
+                <div class="mb-2"><i class="bi bi-clipboard-data"></i></div>
+                <h2 class="h6 mb-1">Voluntários (analítico)</h2>
+                <p class="text-muted small mb-0">Lista analítica de voluntários e entregas.</p>
+            </a>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

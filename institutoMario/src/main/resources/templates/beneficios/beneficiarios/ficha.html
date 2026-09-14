@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Ficha do beneficiário</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <button class="btn btn-primary d-block d-lg-none me-3" id="menu-open-toggle">
+            <i class="bi bi-list"></i>
+        </button>
+        <h1 class="beneficios-titulo-secao h4 m-0" th:text="${ficha.nome}">Nome</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/beneficios/retiradas/registrar(cpf=${ficha.cpf})}" class="btn btn-beneficios-primario">
+                <i class="bi bi-basket2-fill"></i> Registrar retirada
+            </a>
+            <a th:href="@{/beneficios/beneficiarios/{id}/retiradas(id=${ficha.id})}" class="btn btn-beneficios-secundario">
+                <i class="bi bi-clock-history"></i> Histórico de retiradas
+            </a>
+            <a th:href="@{/beneficios/beneficiarios/{id}/editar(id=${ficha.id})}" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a th:href="@{/beneficios/beneficiarios}" class="btn btn-beneficios-secundario">
+                <i class="bi bi-arrow-left"></i> Voltar à lista
+            </a>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="beneficios-faixa-status d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span>
+            <span class="badge me-2" th:classappend="${ficha.status.cssBadge}" th:text="${ficha.status.descricao}">Status</span>
+            <span th:if="${!ficha.ativo}" class="badge bg-secondary me-2">Inativo</span>
+            <span th:if="${ficha.retirouMesAtual}" class="text-success">
+                <i class="bi bi-check-circle-fill"></i> Já retirou a cesta este mês
+            </span>
+            <span th:unless="${ficha.retirouMesAtual}" class="text-muted">
+                <i class="bi bi-dash-circle"></i> Ainda não retirou a cesta este mês
+            </span>
+        </span>
+        <span class="text-muted small">
+            Cadastrado por <strong th:text="${ficha.criadoPor}">—</strong>
+            em <span th:text="${#temporals.format(ficha.criadoEm, 'dd/MM/yyyy HH:mm')}">—</span>
+        </span>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Identificação</strong></div>
+                <div class="card-body row row-cols-1 row-cols-md-2 g-2">
+                    <div><strong>CPF:</strong> <span th:text="${#cpf.mascararConformePerfil(ficha.cpf)}">—</span></div>
+                    <div><strong>Data de nascimento:</strong>
+                        <span th:text="${ficha.dataNascimento != null ? #temporals.format(ficha.dataNascimento, 'dd/MM/yyyy') : '—'}">—</span>
+                    </div>
+                    <div><strong>Telefone:</strong> <span th:text="${ficha.telefone ?: '—'}">—</span></div>
+                    <div><strong>E-mail:</strong> <span th:text="${ficha.email ?: '—'}">—</span></div>
+                    <div><strong>Nome da mãe:</strong> <span th:text="${ficha.nomeMae ?: '—'}">—</span></div>
+                    <div><strong>Cônjuge:</strong> <span th:text="${ficha.nomeConjuge ?: '—'}">—</span></div>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Composição familiar</strong></div>
+                <div class="card-body row row-cols-1 row-cols-md-2 g-2">
+                    <div><strong>Pessoas na residência:</strong> <span th:text="${ficha.pessoasResidencia ?: '—'}">—</span></div>
+                    <div><strong>Tem filhos:</strong> <span th:text="${ficha.temFilhos?.descricao ?: '—'}">—</span></div>
+                    <div><strong>Quantidade:</strong> <span th:text="${ficha.quantidadeFilhos ?: '—'}">—</span></div>
+                    <div><strong>Idades:</strong> <span th:text="${ficha.idadesFilhos ?: '—'}">—</span></div>
+                    <div><strong>Filhos com deficiência:</strong> <span th:text="${ficha.filhosComDeficiencia?.descricao ?: '—'}">—</span></div>
+                    <div><strong>Descrição:</strong> <span th:text="${ficha.descricaoDeficienciaFilhos ?: '—'}">—</span></div>
+                    <div><strong>Familiar com deficiência:</strong> <span th:text="${ficha.familiarComDeficiencia?.descricao ?: '—'}">—</span></div>
+                    <div><strong>Descrição:</strong> <span th:text="${ficha.descricaoDeficienciaFamiliar ?: '—'}">—</span></div>
+                    <div><strong>Tem trabalho:</strong> <span th:text="${ficha.temTrabalho?.descricao ?: '—'}">—</span></div>
+                    <div><strong>Renda familiar:</strong> <span th:text="${ficha.rendaFamiliar != null ? 'R$ ' + ficha.rendaFamiliar : '—'}">—</span></div>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Endereço</strong></div>
+                <div class="card-body">
+                    <p th:if="${ficha.enderecoCompleto}" th:text="${ficha.enderecoCompleto}">Endereço completo</p>
+                    <div class="row row-cols-1 row-cols-md-2 g-2">
+                        <div><strong>Rua:</strong> <span th:text="${ficha.rua ?: '—'}">—</span></div>
+                        <div><strong>Número:</strong> <span th:text="${ficha.numero ?: '—'}">—</span></div>
+                        <div><strong>Complemento:</strong> <span th:text="${ficha.complemento ?: '—'}">—</span></div>
+                        <div><strong>Bairro:</strong> <span th:text="${ficha.bairro ?: '—'}">—</span></div>
+                        <div><strong>Cidade/UF:</strong> <span th:text="${(ficha.cidade ?: '—') + ' / ' + (ficha.uf ?: '—')}">—</span></div>
+                        <div><strong>CEP:</strong> <span th:text="${ficha.cep ?: '—'}">—</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Últimas retiradas (até 12)</strong></div>
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-header">
+                        <tr>
+                            <th>Mês</th>
+                            <th>Data</th>
+                            <th>Retirante</th>
+                            <th>Situação</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="retirada : ${ficha.ultimasRetiradas}">
+                            <td th:text="${#temporals.format(retirada.mesReferencia, 'MM/yyyy')}">—</td>
+                            <td th:text="${#temporals.format(retirada.dataRetirada, 'dd/MM/yyyy HH:mm')}">—</td>
+                            <td th:text="${retirada.retiranteNome} + ' (' + ${retirada.tipoRetirante.descricao} + ')'">—</td>
+                            <td>
+                                <span class="badge" th:classappend="${retirada.cancelada} ? 'bg-secondary' : 'bg-success'"
+                                      th:text="${retirada.cancelada} ? 'Cancelada' : 'Válida'"></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(ficha.ultimasRetiradas)}">
+                            <td colspan="4" class="text-center">Nenhuma retirada registrada ainda.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Benefício</strong></div>
+                <div class="card-body">
+                    <p><strong>Prazo final:</strong><br>
+                        <span th:text="${ficha.prazoFinalBeneficio != null ? #temporals.format(ficha.prazoFinalBeneficio, 'dd/MM/yyyy') : '—'}">—</span>
+                    </p>
+                    <p th:if="${ficha.observacao}"><strong>Observação:</strong><br th:text="${ficha.observacao}"></p>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Padrinho/madrinha</strong></div>
+                <div class="card-body">
+                    <p th:if="${ficha.padrinhoNome}">
+                        <strong th:text="${ficha.padrinhoNome}">Nome</strong>
+                        <a th:href="@{/beneficios/padrinhos/{id}/apadrinhados(id=${ficha.padrinhoId})}" class="small ms-2">ver apadrinhados</a>
+                    </p>
+                    <p th:unless="${ficha.padrinhoNome}" class="text-muted">Nenhum padrinho/madrinha vinculado.</p>
+
+                    <form th:action="@{/beneficios/beneficiarios/{id}/padrinho(id=${ficha.id})}" method="post" class="mb-2">
+                        <select name="voluntarioId" class="form-select mb-2" required>
+                            <option value="">Selecione um voluntário...</option>
+                            <option th:each="voluntario : ${voluntariosAtivos}" th:value="${voluntario.id}" th:text="${voluntario.nome}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-beneficios-primario btn-sm w-100">
+                            <i class="bi bi-heart-fill"></i> Vincular padrinho
+                        </button>
+                    </form>
+
+                    <form th:if="${ficha.padrinhoNome}" th:action="@{/beneficios/beneficiarios/{id}/padrinho/remover(id=${ficha.id})}" method="post"
+                          onsubmit="return confirm('Confirma a remoção do vínculo com este padrinho/madrinha?');">
+                        <textarea name="motivo" class="form-control form-control-sm mb-2" rows="2" placeholder="Motivo da remoção" required></textarea>
+                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                            <i class="bi bi-heartbreak-fill"></i> Remover vínculo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3" sec:authorize="hasRole('ADM')">
+                <div class="card-header"><strong>Alterar status</strong></div>
+                <div class="card-body">
+                    <form th:action="@{/beneficios/beneficiarios/{id}/status(id=${ficha.id})}" method="post">
+                        <div class="mb-2">
+                            <select name="novoStatus" class="form-select" required>
+                                <option th:each="opcao : ${statusOpcoes}" th:value="${opcao.key}" th:text="${opcao.value}"
+                                        th:selected="${opcao.key == ficha.status.name()}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <textarea name="motivo" class="form-control" rows="2" placeholder="Motivo da alteração" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-beneficios-primario w-100">
+                            <i class="bi bi-arrow-repeat"></i> Alterar status
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="beneficios-card card mb-3" th:if="${ficha.ativo}">
+                <div class="card-header"><strong>Inativar cadastro</strong></div>
+                <div class="card-body">
+                    <form th:action="@{/beneficios/beneficiarios/{id}/inativar(id=${ficha.id})}" method="post"
+                          onsubmit="return confirm('Confirma a inativação deste cadastro? Não é uma exclusão — pode ser revertido depois.');">
+                        <div class="mb-2">
+                            <textarea name="motivo" class="form-control" rows="2" placeholder="Motivo da inativação" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-slash-circle"></i> Inativar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

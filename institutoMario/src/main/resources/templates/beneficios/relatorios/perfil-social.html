@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8"><title>Perfil social</title>
+</head>
+<body>
+<div class="no-print" th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content" id="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <div>
+            <button class="btn btn-primary d-block d-lg-none mb-2" id="menu-open-toggle"><i class="bi bi-list"></i></button>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-beneficios-secundario btn-sm" th:href="@{/beneficios/relatorios/perfil-social(formato='csv')}"><i class="bi bi-filetype-csv"></i> CSV</a>
+            <a class="btn btn-beneficios-secundario btn-sm" th:href="@{/beneficios/relatorios/perfil-social(formato='xlsx')}"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+            <button type="button" class="btn btn-beneficios-secundario btn-sm" onclick="window.print()"><i class="bi bi-printer-fill"></i></button>
+        </div>
+    </div>
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Perfil social do público atendido</h1>
+    <p class="text-muted">Agregados de <strong th:text="${perfil.totalBeneficiarios}">0</strong> beneficiários ativos.</p>
+
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">Média de pessoas por residência</div>
+            <div class="h3 mb-0" th:text="${perfil.mediaPessoasResidencia}">0</div>
+        </div></div></div>
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">% com filhos</div>
+            <div class="h3 mb-0" th:text="${perfil.percentualComFilhos} + '%'">0%</div>
+        </div></div></div>
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">Média de filhos</div>
+            <div class="h3 mb-0" th:text="${perfil.mediaFilhos}">0</div>
+        </div></div></div>
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">% filhos com deficiência</div>
+            <div class="h3 mb-0" th:text="${perfil.percentualFilhosComDeficiencia} + '%'">0%</div>
+        </div></div></div>
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">% familiar com deficiência</div>
+            <div class="h3 mb-0" th:text="${perfil.percentualFamiliarComDeficiencia} + '%'">0%</div>
+        </div></div></div>
+        <div class="col-6 col-lg-4"><div class="beneficios-card card text-center h-100"><div class="card-body">
+            <div class="text-muted small">% sem trabalho</div>
+            <div class="h3 mb-0" th:text="${perfil.percentualSemTrabalho} + '%'">0%</div>
+        </div></div></div>
+    </div>
+
+    <div class="beneficios-card card">
+        <div class="card-header"><strong>Faixas etárias</strong></div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead class="table-header"><tr><th>Faixa</th><th>Quantidade</th></tr></thead>
+                <tbody>
+                <tr th:each="entrada : ${perfil.faixasEtarias}">
+                    <td th:text="${entrada.key}">—</td>
+                    <td th:text="${entrada.value}">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

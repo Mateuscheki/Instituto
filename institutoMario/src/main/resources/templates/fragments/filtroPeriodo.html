@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Fragmento único de filtro dos relatórios (Etapa 5) — cada tela mostra só os
+  campos que fazem sentido pra ela via os parâmetros booleanos. Os botões de
+  exportação/impressão reaproveitam os MESMOS valores de filtro atuais.
+-->
+<div th:fragment="filtroPeriodo(acaoUrl, filtro, mostrarMes, mostrarPeriodo, mostrarCidadeBairro, mostrarPadrinho, padrinhos, exportar)"
+     class="beneficios-card card mb-3 no-print">
+    <div class="card-body">
+        <form th:action="@{${acaoUrl}}" method="get" class="row g-2">
+            <div class="col-md-2" th:if="${mostrarMes}">
+                <label class="form-label campo-label">Mês</label>
+                <input type="month" name="mes" class="form-control" th:value="${filtro.mes}">
+            </div>
+            <div class="col-md-2" th:if="${mostrarPeriodo}">
+                <label class="form-label campo-label">Mês inicial</label>
+                <input type="month" name="mesInicio" class="form-control" th:value="${filtro.mesInicio}">
+            </div>
+            <div class="col-md-2" th:if="${mostrarPeriodo}">
+                <label class="form-label campo-label">Mês final</label>
+                <input type="month" name="mesFim" class="form-control" th:value="${filtro.mesFim}">
+            </div>
+            <div class="col-md-2" th:if="${mostrarCidadeBairro}">
+                <label class="form-label campo-label">Cidade</label>
+                <input type="text" name="cidade" class="form-control" th:value="${filtro.cidade}">
+            </div>
+            <div class="col-md-2" th:if="${mostrarCidadeBairro}">
+                <label class="form-label campo-label">Bairro</label>
+                <input type="text" name="bairro" class="form-control" th:value="${filtro.bairro}">
+            </div>
+            <div class="col-md-2" th:if="${mostrarPadrinho}">
+                <label class="form-label campo-label">Padrinho</label>
+                <select name="padrinhoId" class="form-select">
+                    <option value="">Todos</option>
+                    <option th:each="p : ${padrinhos}" th:value="${p.id}" th:text="${p.nome}"
+                            th:selected="${filtro.padrinhoId != null and p.id == filtro.padrinhoId}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-beneficios-primario w-100"><i class="bi bi-search"></i> Filtrar</button>
+            </div>
+        </form>
+
+        <div class="d-flex gap-2 mt-3" th:if="${exportar}">
+            <a class="btn btn-beneficios-secundario btn-sm"
+               th:href="@{${acaoUrl}(mes=${filtro.mes}, mesInicio=${filtro.mesInicio}, mesFim=${filtro.mesFim}, dataInicio=${filtro.dataInicio}, dataFim=${filtro.dataFim}, cidade=${filtro.cidade}, bairro=${filtro.bairro}, padrinhoId=${filtro.padrinhoId}, dias=${filtro.dias}, agruparPor=${filtro.agruparPor}, codigo=${filtro.codigo}, ativo=${filtro.ativo}, areaAtuacao=${filtro.areaAtuacao}, formato='csv')}">
+                <i class="bi bi-filetype-csv"></i> Exportar CSV
+            </a>
+            <a class="btn btn-beneficios-secundario btn-sm"
+               th:href="@{${acaoUrl}(mes=${filtro.mes}, mesInicio=${filtro.mesInicio}, mesFim=${filtro.mesFim}, dataInicio=${filtro.dataInicio}, dataFim=${filtro.dataFim}, cidade=${filtro.cidade}, bairro=${filtro.bairro}, padrinhoId=${filtro.padrinhoId}, dias=${filtro.dias}, agruparPor=${filtro.agruparPor}, codigo=${filtro.codigo}, ativo=${filtro.ativo}, areaAtuacao=${filtro.areaAtuacao}, formato='xlsx')}">
+                <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+            </a>
+            <button type="button" class="btn btn-beneficios-secundario btn-sm" onclick="window.print()">
+                <i class="bi bi-printer-fill"></i> Imprimir
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

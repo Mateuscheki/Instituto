@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+<div class="no-print" th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3 no-print" id="menu-open-toggle"><i class="bi bi-list"></i></button>
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 no-print">
+        <h1 class="beneficios-titulo-secao h4 m-0">Dashboard — <span th:text="${mes}">mês</span></h1>
+        <form th:action="@{/beneficios/relatorios/dashboard}" method="get" class="d-flex gap-2">
+            <input type="month" name="mes" class="form-control" th:value="${mes}">
+            <button type="submit" class="btn btn-beneficios-primario">Ver</button>
+            <button type="button" class="btn btn-beneficios-secundario" onclick="window.print()"><i class="bi bi-printer-fill"></i></button>
+        </form>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Beneficiários ativos</div>
+                <div class="h3 mb-0" th:text="${dashboard.beneficiariosAtivos}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Aptos no mês</div>
+                <div class="h3 mb-0" th:text="${dashboard.aptosNoMes}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Retiraram no mês</div>
+                <div class="h3 mb-0" th:text="${dashboard.retiradasDoMes}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">% de adesão</div>
+                <div class="h3 mb-0" th:text="${dashboard.percentualAdesao} + '%'">0%</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Pendentes</div>
+                <div class="h3 mb-0 text-danger" th:text="${dashboard.pendentes}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Cestas entregues</div>
+                <div class="h3 mb-0" th:text="${dashboard.cestasEntregues}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Novos cadastros</div>
+                <div class="h3 mb-0" th:text="${dashboard.novosCadastros}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Vencendo em 30 dias</div>
+                <div class="h3 mb-0" th:text="${dashboard.beneficiosVencendo30Dias}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Voluntários ativos</div>
+                <div class="h3 mb-0" th:text="${dashboard.voluntariosAtivos}">0</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="beneficios-card card text-center h-100"><div class="card-body">
+                <div class="text-muted small">Padrinhos ativos</div>
+                <div class="h3 mb-0" th:text="${dashboard.padrinhosAtivos}">0</div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Retiradas por mês</strong></div>
+                <div class="card-body"><canvas id="graficoRetiradasPorMes" height="220"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Retiradas por bairro (mês atual)</strong></div>
+                <div class="card-body"><canvas id="graficoRetiradasPorBairro" height="220"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="beneficios-card card mb-3">
+                <div class="card-header"><strong>Tipo de retirante (mês atual)</strong></div>
+                <div class="card-body"><canvas id="graficoTipoRetirante" height="220"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+<script th:src="@{/js/chart.umd.min.js}"></script>
+<script th:inline="javascript">
+    const labelsMeses = /*[[${labelsMeses}]]*/ [];
+    const valoresMeses = /*[[${valoresMeses}]]*/ [];
+    const labelsBairros = /*[[${labelsBairros}]]*/ [];
+    const valoresBairros = /*[[${valoresBairros}]]*/ [];
+    const labelsTipos = /*[[${labelsTipos}]]*/ [];
+    const valoresTipos = /*[[${valoresTipos}]]*/ [];
+
+    new Chart(document.getElementById('graficoRetiradasPorMes'), {
+        type: 'line',
+        data: { labels: labelsMeses, datasets: [{ label: 'Retiradas', data: valoresMeses, borderColor: '#004aad', backgroundColor: 'rgba(0,74,173,0.15)', fill: true, tension: 0.2 }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('graficoRetiradasPorBairro'), {
+        type: 'bar',
+        data: { labels: labelsBairros, datasets: [{ label: 'Retiradas', data: valoresBairros, backgroundColor: '#004aad' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('graficoTipoRetirante'), {
+        type: 'doughnut',
+        data: { labels: labelsTipos, datasets: [{ data: valoresTipos, backgroundColor: ['#004aad','#1e7e34','#c9971c','#b02a37','#6c757d','#0d6efd'] }] },
+        options: { responsive: true }
+    });
+</script>
+</body>
+</html>

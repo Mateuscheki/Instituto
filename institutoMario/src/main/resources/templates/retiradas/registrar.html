@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(tituloPagina=${tituloPagina})}">
+    <meta charset="UTF-8">
+    <title>Registrar retirada</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content" id="main-content">
+    <button class="btn btn-primary d-block d-lg-none mb-3" id="menu-open-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div th:replace="~{fragments/alertas :: alertas}"></div>
+
+    <span class="beneficios-badge-secao">CADASTRO E ATENDIMENTO</span>
+    <h1 class="beneficios-titulo-secao h4 mb-3">Registrar retirada</h1>
+
+    <!-- Passo 1: buscar por CPF -->
+    <div class="beneficios-card card mb-3">
+        <div class="card-body">
+            <form th:action="@{/beneficios/retiradas/registrar}" method="get" class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label for="cpf" class="form-label campo-label">CPF do beneficiário</label>
+                    <input type="text" id="cpf" name="cpf" class="form-control mascara-cpf"
+                           th:value="${cpfPesquisado}" placeholder="Ex.: 123.456.789-00" inputmode="numeric" maxlength="14">
+                </div>
+                <div class="col-md-3">
+                    <label for="mesBusca" class="form-label campo-label">Mês de referência</label>
+                    <input type="month" id="mesBusca" name="mes"
+                           th:value="${elegibilidade != null ? elegibilidade.mesReferencia : null}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-beneficios-primario">
+                        <i class="bi bi-search"></i> Verificar elegibilidade
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Painel de elegibilidade -->
+    <div th:if="${elegibilidade != null}" class="beneficios-card card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <div>
+                    <h2 class="h5 mb-1" th:text="${elegibilidade.nome ?: 'CPF não cadastrado'}">Nome</h2>
+                    <div class="text-muted" th:text="${#cpf.mascararConformePerfil(elegibilidade.cpf)}">CPF</div>
+                </div>
+                <span class="badge fs-6" th:classappend="${elegibilidade.situacao.cssBadge}" th:text="${elegibilidade.situacao.descricao}">Situação</span>
+            </div>
+
+            <div th:if="${elegibilidade.situacao.name() == 'NAO_CADASTRADO'}" class="alert alert-warning">
+                Este CPF ainda não tem cadastro no programa.
+                <a th:href="@{/beneficios/beneficiarios/novo(cpf=${elegibilidade.cpf})}" class="btn btn-beneficios-primario btn-sm ms-2">
+                    <i class="bi bi-person-plus-fill"></i> Cadastrar agora
+                </a>
+            </div>
+
+            <div th:if="${elegibilidade.situacao.name() != 'NAO_CADASTRADO'}" class="row row-cols-1 row-cols-md-3 g-2 mb-2">
+                <div><strong>Status do cadastro:</strong> <span th:text="${elegibilidade.status.descricao}">—</span></div>
+                <div><strong>Última retirada:</strong>
+                    <span th:text="${elegibilidade.ultimaRetiradaData != null ? #temporals.format(elegibilidade.ultimaRetiradaData, 'dd/MM/yyyy') + ' (' + elegibilidade.ultimaRetiradaTipoRetirante.descricao + ')' : 'nunca retirou'}">—</span>
+                </div>
+                <div><strong>Padrinho vinculado:</strong> <span th:text="${elegibilidade.padrinhoVinculadoNome ?: '—'}">—</span></div>
+                <div><strong>Prazo final do benefício:</strong>
+                    <span th:text="${elegibilidade.prazoFinalBeneficio != null ? #temporals.format(elegibilidade.prazoFinalBeneficio, 'dd/MM/yyyy') : '—'}">—</span>
+                </div>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(elegibilidade.avisosPreliminares)}" class="mt-2">
+                <div th:each="aviso : ${elegibilidade.avisosPreliminares}"
+                     class="alert py-2 mb-1"
+                     th:classappend="${aviso.severidade.name() == 'ALTA'} ? 'alert-danger' : (${aviso.severidade.name() == 'ATENCAO'} ? 'alert-warning' : 'alert-info')">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${aviso.mensagem}">Aviso</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passo 2: formulário da retirada (só aparece se o beneficiário existe) -->
+    <form th:if="${retiradaForm != null}" th:action="@{/beneficios/retiradas/salvar}" th:object="${retiradaForm}" method="post" id="formRetirada">
+        <input type="hidden" th:field="*{cpfBeneficiario}">
+
+        <div class="beneficios-card card mb-4">
+            <div class="card-header"><strong>Dados da retirada</strong></div>
+            <div class="card-body row g-3">
+
+                <div class="col-md-3">
+                    <label for="mesReferencia" class="form-label campo-label">Mês de referência</label>
+                    <select id="mesReferencia" name="mesReferencia" class="form-select">
+                        <option th:each="mesOpcao : ${mesesDisponiveis}"
+                                th:value="${mesOpcao}"
+                                th:text="${#strings.substring(mesOpcao,5,7)} + '/' + ${#strings.substring(mesOpcao,0,4)}"
+                                th:selected="${mesOpcao == retiradaForm.mesReferencia}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('mesReferencia')}" class="text-danger small mt-1" th:errors="*{mesReferencia}">Erro</div>
+                    <div class="form-text">Retroativo, no máximo 3 meses.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="dataRetirada" class="form-label campo-label">Data e hora da retirada</label>
+                    <input type="datetime-local" id="dataRetirada" name="dataRetirada" class="form-control" th:value="${retiradaForm.dataRetirada}">
+                    <div th:if="${#fields.hasErrors('dataRetirada')}" class="text-danger small mt-1" th:errors="*{dataRetirada}">Erro</div>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="quantidadeCestas" class="form-label campo-label">Qtd. cestas</label>
+                    <input type="number" id="quantidadeCestas" name="quantidadeCestas" min="1" class="form-control" th:value="${retiradaForm.quantidadeCestas}">
+                    <div th:if="${#fields.hasErrors('quantidadeCestas')}" class="text-danger small mt-1" th:errors="*{quantidadeCestas}">Erro</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="tipoRetirante" class="form-label campo-label">Quem está retirando</label>
+                    <select id="tipoRetirante" name="tipoRetirante" class="form-select" onchange="beneficiosAplicarTipoRetirante()">
+                        <option value="">Selecione...</option>
+                        <option th:each="opcao : ${tiposRetirante}" th:value="${opcao.key}" th:text="${opcao.value}"
+                                th:selected="${opcao.key == retiradaForm.tipoRetirante}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('tipoRetirante')}" class="text-danger small mt-1" th:errors="*{tipoRetirante}">Erro</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="retiranteNome" class="form-label campo-label">Nome do retirante</label>
+                    <input type="text" id="retiranteNome" name="retiranteNome" class="form-control" th:value="${retiradaForm.retiranteNome}">
+                    <div th:if="${#fields.hasErrors('retiranteNome')}" class="text-danger small mt-1" th:errors="*{retiranteNome}">Erro</div>
+                </div>
+                <div class="col-md-4">
+                    <label for="retiranteCpf" class="form-label campo-label">CPF do retirante</label>
+                    <input type="text" id="retiranteCpf" name="retiranteCpf" class="form-control mascara-cpf" th:value="${retiradaForm.retiranteCpf}">
+                    <div th:if="${#fields.hasErrors('retiranteCpf')}" class="text-danger small mt-1" th:errors="*{retiranteCpf}">Erro</div>
+                </div>
+
+                <div class="col-md-4 d-none" id="wrapperRetiranteVinculo">
+                    <label for="retiranteVinculo" class="form-label campo-label">Vínculo com o beneficiário</label>
+                    <input type="text" id="retiranteVinculo" name="retiranteVinculo" class="form-control" th:value="${retiradaForm.retiranteVinculo}" placeholder="Ex.: tia, vizinha autorizada">
+                    <div th:if="${#fields.hasErrors('retiranteVinculo')}" class="text-danger small mt-1" th:errors="*{retiranteVinculo}">Erro</div>
+                </div>
+
+                <div class="col-md-4 d-none" id="wrapperPadrinhoId">
+                    <label for="padrinhoId" class="form-label campo-label">Padrinho/madrinha que retirou</label>
+                    <select id="padrinhoId" name="padrinhoId" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option th:each="padrinho : ${padrinhos}" th:value="${padrinho.id}" th:text="${padrinho.nome}"
+                                th:data-padrinho-vinculado="${elegibilidade != null and elegibilidade.padrinhoVinculadoId == padrinho.id}"
+                                th:selected="${padrinho.id.toString() == retiradaForm.padrinhoId}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('padrinhoId')}" class="text-danger small mt-1" th:errors="*{padrinhoId}">Erro</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="voluntarioEntregaId" class="form-label campo-label">Quem entregou (voluntário/staff)</label>
+                    <select id="voluntarioEntregaId" name="voluntarioEntregaId" class="form-select">
+                        <option value="">Não informado</option>
+                        <option th:each="voluntario : ${voluntarios}" th:value="${voluntario.id}" th:text="${voluntario.nome}"
+                                th:selected="${voluntario.id.toString() == retiradaForm.voluntarioEntregaId}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('voluntarioEntregaId')}" class="text-danger small mt-1" th:errors="*{voluntarioEntregaId}">Erro</div>
+                </div>
+
+                <div class="col-12">
+                    <div th:replace="~{fragments/campos :: campoTextarea(id='observacao', nome='observacao', label='Observação', valor=${retiradaForm.observacao}, linhas=2)}"></div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-beneficios-primario">
+            <i class="bi bi-check-circle"></i> Registrar retirada
+        </button>
+        <a th:href="@{/beneficios/retiradas/registrar}" class="btn btn-beneficios-secundario ms-2">Cancelar</a>
+    </form>
+</div>
+
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+<script th:if="${retiradaForm != null}" th:inline="javascript">
+    const beneficiosNomeProprio = /*[[${elegibilidade?.nome}]]*/ '';
+    const beneficiosCpfProprio = /*[[${elegibilidade?.cpf}]]*/ '';
+    const beneficiosNomeConjuge = /*[[${elegibilidade?.nomeConjuge}]]*/ '';
+    const beneficiosNomeMae = /*[[${elegibilidade?.nomeMae}]]*/ '';
+
+    function beneficiosAplicarTipoRetirante() {
+        const tipo = document.getElementById('tipoRetirante').value;
+        const nomeCampo = document.getElementById('retiranteNome');
+        const cpfCampo = document.getElementById('retiranteCpf');
+        const wrapperVinculo = document.getElementById('wrapperRetiranteVinculo');
+        const wrapperPadrinho = document.getElementById('wrapperPadrinhoId');
+
+        nomeCampo.readOnly = false;
+        cpfCampo.readOnly = false;
+        wrapperVinculo.classList.add('d-none');
+        wrapperPadrinho.classList.add('d-none');
+        document.getElementById('retiranteVinculo').required = false;
+        document.getElementById('padrinhoId').required = false;
+
+        if (tipo === 'PROPRIO') {
+            nomeCampo.value = beneficiosNomeProprio || '';
+            cpfCampo.value = beneficiosCpfProprio || '';
+            nomeCampo.readOnly = true;
+            cpfCampo.readOnly = true;
+        } else if (tipo === 'CONJUGE' && !nomeCampo.value) {
+            nomeCampo.value = beneficiosNomeConjuge || '';
+        } else if (tipo === 'MAE' && !nomeCampo.value) {
+            nomeCampo.value = beneficiosNomeMae || '';
+        } else if (tipo === 'PADRINHO') {
+            wrapperPadrinho.classList.remove('d-none');
+            document.getElementById('padrinhoId').required = true;
+        } else if (tipo === 'OUTRO_FAMILIAR' || tipo === 'TERCEIRO_AUTORIZADO') {
+            wrapperVinculo.classList.remove('d-none');
+            document.getElementById('retiranteVinculo').required = true;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        beneficiosAplicarTipoRetirante();
+
+        // pré-seleciona o padrinho vinculado ao beneficiário, se ainda não houver seleção
+        const selectPadrinho = document.getElementById('padrinhoId');
+        if (selectPadrinho && !selectPadrinho.value) {
+            const opcaoVinculada = selectPadrinho.querySelector('option[data-padrinho-vinculado="true"]');
+            if (opcaoVinculada) {
+                selectPadrinho.value = opcaoVinculada.value;
+            }
+        }
+    });
+</script>
+</body>
+</html>
