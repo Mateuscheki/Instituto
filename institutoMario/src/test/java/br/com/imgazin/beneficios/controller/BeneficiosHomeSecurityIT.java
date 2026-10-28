@@ -17,19 +17,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-/**
- * Sobe o contexto Spring inteiro (não dá para "fatiar" a SecurityConfig sem
- * mockar meio sistema legado — ela também monta a chain de /api/** e a chain
- * web principal, ambas usadas pelo resto da aplicação). Por isso usa
- * Testcontainers com {@code ddl-auto=update} só neste teste: banco fresco,
- * o Flyway cria as tabelas de Benefícios e o Hibernate cria as ~20 tabelas
- * legadas (que não têm migration) — em produção, o banco já existe e
- * ddl-auto continua "update" também (ver nota em application.properties).
- * <p>
- * A autenticação usa {@code user(...).roles("ADM")} do spring-security-test
- * — não depende do login real (Usuario/CPF/senha) para testar só a regra de
- * autorização do caminho /beneficios/**.
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Testcontainers
@@ -43,9 +30,6 @@ class BeneficiosHomeSecurityIT {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
-        // Banco fresco (Testcontainers): sem isso, ddl-auto=validate/baseline
-        // do application.properties quebraria por não achar as ~20 tabelas
-        // legadas, que não têm migration Flyway (só a fundação de Benefícios tem).
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 

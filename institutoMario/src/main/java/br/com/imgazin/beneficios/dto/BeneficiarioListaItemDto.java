@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-/** Uma linha da listagem paginada de beneficiários. */
 @Data
 @AllArgsConstructor
 public class BeneficiarioListaItemDto {

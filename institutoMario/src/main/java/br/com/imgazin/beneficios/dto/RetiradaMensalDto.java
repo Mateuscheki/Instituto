@@ -14,5 +14,5 @@ public class RetiradaMensalDto {
     private long retiradas;
     private long cestas;
     private long beneficiariosDistintos;
-    private double percentualAdesao; // preenchido pelo service (precisa do total de aptos daquele mês)
+    private double percentualAdesao;
 }

@@ -20,12 +20,6 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Monta o painel de elegibilidade exibido antes do formulário de retirada
- * (ver {@code retiradas/registrar.html}). "Avisos preliminares" são uma
- * prévia rodando o motor de avisos só com o que já se sabe (CPF + mês) —
- * ficam mais completos quando o formulário inteiro é submetido.
- */
 @Service
 @RequiredArgsConstructor
 public class ElegibilidadeService {

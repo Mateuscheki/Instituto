@@ -7,7 +7,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-/** Validação estrutural (formato) do cadastro de voluntário — CPF é opcional aqui. */
 @Component
 public class VoluntarioFormValidator implements Validator {
 

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** TELEFONE_DUPLICADO (INFO): telefone já usado por outro cadastro ativo. */
 @Component
 @RequiredArgsConstructor
 public class RegraTelefoneDuplicado implements RegraAviso {

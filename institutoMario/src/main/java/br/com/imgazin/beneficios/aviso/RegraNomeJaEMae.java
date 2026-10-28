@@ -7,10 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * NOME_JA_E_MAE (ALTA): o nome desta pessoa já consta como "nome da mãe" no
- * cadastro de outro beneficiário ativo.
- */
 @Component
 @RequiredArgsConstructor
 public class RegraNomeJaEMae implements RegraAviso {

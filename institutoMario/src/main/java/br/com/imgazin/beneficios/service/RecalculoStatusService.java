@@ -13,17 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Virada de mês: quem estava RETIRADO_MES_ATUAL volta a ficar
- * APTO_MES_ATUAL, e quem venceu o prazo do benefício vira PRAZO_ENCERRADO.
- * Roda automaticamente todo dia 1º às 00:05 (America/Sao_Paulo) e também
- * pode ser disparado manualmente por um ADM (ver
- * {@code BeneficiosAdminController}).
- * <p>
- * Idempotente por construção: cada consulta já busca só quem AINDA está no
- * status antigo, então rodar de novo no mesmo dia não encontra nada para
- * mudar na segunda vez.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j

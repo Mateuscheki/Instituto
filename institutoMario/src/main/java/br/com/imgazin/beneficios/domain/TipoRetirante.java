@@ -1,6 +1,5 @@
 package br.com.imgazin.beneficios.domain;
 
-/** Quem efetivamente retirou a cesta em nome do beneficiário. */
 public enum TipoRetirante {
 
     PROPRIO("O próprio beneficiário"),

@@ -38,4 +38,7 @@ build/
 
 ### VS Code ###
 .vscode/
-.claude.md
+
+### Instruções locais do assistente (não versionar) ###
+claude.md
+CLAUDE.md

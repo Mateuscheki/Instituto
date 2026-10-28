@@ -49,7 +49,6 @@ public class VoluntarioService {
         return voluntarioRepository.findAll(construirSpecification(filtro), pageable).map(mapper::paraItemLista);
     }
 
-    /** CPF é opcional — só verifica duplicidade se foi informado. */
     public void verificarCpfDuplicado(VoluntarioForm form) {
         if (form.getCpf() == null || form.getCpf().isBlank()) {
             return;
@@ -86,7 +85,6 @@ public class VoluntarioService {
         return entidade;
     }
 
-    /** Tela `voluntarios/atuacao`: entregas por mês, apadrinhados e última atividade. */
     public VoluntarioAtuacaoDto montarAtuacao(Long id) {
         Voluntario voluntario = buscarPorId(id);
 

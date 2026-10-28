@@ -6,12 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * PADRINHO_NAO_VINCULADO (ATENCAO) — citada em prosa nas "Regras automáticas"
- * do CLAUDE.md (não veio na tabela de avisos, mas é claramente um aviso de
- * confirmação, não bloqueio): tipo de retirante é PADRINHO, mas não foi
- * informado nenhum e o beneficiário também não tem um vinculado.
- */
 @Component
 public class RegraPadrinhoNaoVinculado implements RegraAvisoRetirada {
 

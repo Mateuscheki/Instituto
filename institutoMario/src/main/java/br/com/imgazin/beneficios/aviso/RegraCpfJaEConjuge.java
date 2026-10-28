@@ -12,10 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * CPF_JA_E_CONJUGE (ALTA): o CPF (ou, na falta dele, o nome) desta pessoa já
- * consta como cônjuge no cadastro de outro beneficiário ativo.
- */
 @Component
 @RequiredArgsConstructor
 public class RegraCpfJaEConjuge implements RegraAviso {

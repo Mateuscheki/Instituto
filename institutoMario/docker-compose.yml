@@ -1,8 +1,4 @@
 services:
-  # Sem serviço de banco aqui — o Postgres é o Supabase remoto (mesmo projeto
-  # em dev e produção). Ver README.md, seção "Configurando o Supabase", para
-  # criar o projeto e obter a connection string que preenche as variáveis
-  # SPRING_DATASOURCE_* abaixo (via .env — veja .env.example).
   app:
     build: .
     container_name: img-springboot-app

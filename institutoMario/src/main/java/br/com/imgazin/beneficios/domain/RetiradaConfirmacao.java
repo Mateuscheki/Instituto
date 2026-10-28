@@ -19,14 +19,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Registra um aviso de confirmação exibido ao operador durante uma retirada
- * (ex.: "mesmo endereço de outro cadastro") e o fato de ele ter confirmado e
- * prosseguido mesmo assim — nunca um bloqueio, sempre um registro de decisão.
- * Não estende {@link Auditoria}: aqui quem cumpre esse papel é
- * {@code confirmadoPor}/{@code confirmadoEm}, já que o registro nasce e não
- * é editado depois.
- */
 @Getter
 @Setter
 @Entity

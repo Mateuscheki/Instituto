@@ -33,10 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Orquestra a persistência do beneficiário. Controller nunca grava nada
- * diretamente (ver CLAUDE.md) — sempre passa por aqui.
- */
 @Service
 @RequiredArgsConstructor
 public class BeneficiarioService {
@@ -53,7 +49,6 @@ public class BeneficiarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Beneficiário não encontrado: " + id));
     }
 
-    /** Busca por CPF aceitando com ou sem máscara (normaliza antes de consultar). */
     public Optional<Beneficiario> buscarPorCpf(String cpf) {
         String normalizado = CpfUtils.normalizar(cpf);
         if (normalizado == null || normalizado.length() != 11) {
@@ -67,11 +62,6 @@ public class BeneficiarioService {
                 .map(mapper::paraItemLista);
     }
 
-    /**
-     * Único caso de negócio que bloqueia (ver CLAUDE.md, Etapa 2): CPF já
-     * cadastrado em OUTRO registro. Não lança nada se for o próprio registro
-     * sendo editado.
-     */
     public void verificarCpfDuplicado(BeneficiarioForm form) {
         String cpfNormalizado = CpfUtils.normalizar(form.getCpf());
         beneficiarioRepository.findByCpf(cpfNormalizado).ifPresent(existente -> {
@@ -106,7 +96,6 @@ public class BeneficiarioService {
         return entidade;
     }
 
-    /** Regra #5 (status inicial AGUARDANDO_ANALISE) e #6 (prazo vencido não bloqueia, mas muda o status). */
     private void aplicarStatus(BeneficiarioForm form, Beneficiario entidade, boolean novoCadastro) {
         StatusBeneficiario statusInformado = parseStatus(form.getStatus());
 

@@ -9,11 +9,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Valida o dígito verificador do CPF (algoritmo da Receita Federal), não só
- * a quantidade de dígitos. Aceita nulo/vazio — combine com {@code @NotBlank}
- * quando o campo for obrigatório.
- */
 @Documented
 @Constraint(validatedBy = CpfValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})

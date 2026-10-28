@@ -12,15 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-/**
- * Campos de auditoria obrigatórios em toda entidade do módulo Benefícios
- * (`criado_em`, `criado_por`, `atualizado_em`, `atualizado_por`), preenchidos
- * automaticamente pelo Spring Data JPA Auditing — ver
- * {@link br.com.imgazin.beneficios.config.AuditorAwareImpl}.
- * <p>
- * Só {@code @Getter}: os quatro campos são escritos exclusivamente pelo
- * {@code AuditingEntityListener}, nunca por código do módulo.
- */
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

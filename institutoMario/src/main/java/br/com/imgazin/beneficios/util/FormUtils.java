@@ -7,14 +7,6 @@ import java.beans.PropertyDescriptor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Reflexão genérica sobre um objeto de formulário — usado para gerar os
- * {@code <input type="hidden">} da tela de confirmação sem repetir campo a
- * campo na view nem no controller (ver
- * {@code fragments/campos.html :: hiddensDoForm}). Funciona para qualquer
- * Form do módulo (não só {@code BeneficiarioForm}), pensado para reuso nos
- * próximos fluxos de confirmação (retirada, etc.).
- */
 public final class FormUtils {
 
     private FormUtils() {

@@ -20,20 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Consultas de leitura para os relatórios — sempre agregando via JPQL/SQL
- * direto no banco, nunca carregando entidade para somar em memória (ver
- * CLAUDE.md, Etapa 5). Fica numa classe própria (não uma interface Spring
- * Data comum) porque cada relatório combina parâmetros de um jeito
- * diferente demais para caber bem em métodos derivados/@Query fixos.
- */
 @Repository
 @RequiredArgsConstructor
 public class RelatorioRepository {
 
     private final EntityManager entityManager;
-
-    // ---- Dashboard / contadores simples ----
 
     public long contarBeneficiariosAtivos() {
         return numero(entityManager.createQuery("select count(b) from Beneficiario b where b.ativo = true").getSingleResult());
@@ -79,9 +70,6 @@ public class RelatorioRepository {
         return numero(entityManager.createQuery("select count(v) from Voluntario v where v.ativo = true and v.padrinho = true").getSingleResult());
     }
 
-    // ---- Séries e agrupamentos ----
-
-    /** [mes, retiradas, cestas, beneficiariosDistintos] por mês, no intervalo (ambos inclusive). */
     @SuppressWarnings("unchecked")
     public List<Object[]> serieRetiradasPorMes(LocalDate inicio, LocalDate fim) {
         return entityManager.createQuery(
@@ -92,7 +80,6 @@ public class RelatorioRepository {
                 .getResultList();
     }
 
-    /** [tipoRetirante, quantidade] das retiradas válidas no mês. */
     @SuppressWarnings("unchecked")
     public List<Object[]> distribuicaoTipoRetiranteNoMes(LocalDate mes) {
         return entityManager.createQuery(
@@ -101,7 +88,6 @@ public class RelatorioRepository {
                 .setParameter("mes", mes).getResultList();
     }
 
-    /** [tipoRetirante, quantidade] no período, excluindo PROPRIO — indicador de controle interno. */
     @SuppressWarnings("unchecked")
     public List<Object[]> distribuicaoTipoRetiranteTerceirosNoPeriodo(LocalDate inicio, LocalDate fim) {
         return entityManager.createQuery(
@@ -140,8 +126,6 @@ public class RelatorioRepository {
                 .toList();
     }
 
-    // ---- Por padrinho / por voluntário ----
-
     public long contarApadrinhados(Long padrinhoId) {
         return numero(entityManager.createQuery("select count(b) from Beneficiario b where b.padrinho.id = :id")
                 .setParameter("id", padrinhoId).getSingleResult());
@@ -173,8 +157,6 @@ public class RelatorioRepository {
                         "select count(r) from RetiradaCesta r where r.voluntarioEntrega.id = :id and r.cancelada = false")
                 .setParameter("id", voluntarioId).getSingleResult());
     }
-
-    // ---- Perfil social (só beneficiários ativos) ----
 
     public double mediaPessoasResidencia() {
         return mediaOuZero("select avg(b.pessoasResidencia) from Beneficiario b where b.ativo = true and b.pessoasResidencia is not null");
@@ -222,8 +204,6 @@ public class RelatorioRepository {
         return nascimentos.stream().map(data -> java.time.Period.between(data, hoje).getYears()).toList();
     }
 
-    // ---- Confirmações (conformidade) ----
-
     @SuppressWarnings("unchecked")
     public List<Object[]> confirmacoesNoPeriodo(LocalDateTime inicio, LocalDateTime fim, String codigo) {
         StringBuilder jpql = new StringBuilder(
@@ -242,8 +222,6 @@ public class RelatorioRepository {
         }
         return query.getResultList();
     }
-
-    // ---- helpers ----
 
     private long numero(Object valor) {
         if (valor == null) {

@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** Um aviso confirmado, registrado junto a uma retirada (tabela retirada_confirmacao). */
 @Data
 @AllArgsConstructor
 public class RetiradaConfirmacaoDto {

@@ -2,13 +2,6 @@ package br.com.imgazin.beneficios.util;
 
 import java.text.Normalizer;
 
-/**
- * Comparação aproximada de texto para o aviso {@code NOME_SIMILAR}. O
- * projeto usa MySQL (sem a extensão {@code pg_trgm}/{@code similarity} do
- * Postgres), então a similaridade é calculada em Java: normaliza (sem
- * acento, minúsculo) e mede a distância de Levenshtein, convertida em uma
- * razão de 0 a 1 (1 = idêntico).
- */
 public final class TextoUtils {
 
     private TextoUtils() {
@@ -23,7 +16,6 @@ public final class TextoUtils {
         return semAcento.toLowerCase().trim().replaceAll("\\s+", " ");
     }
 
-    /** 1.0 = textos idênticos (após normalizar); 0.0 = completamente diferentes. */
     public static double similaridade(String a, String b) {
         String x = normalizarSemAcento(a);
         String y = normalizarSemAcento(b);

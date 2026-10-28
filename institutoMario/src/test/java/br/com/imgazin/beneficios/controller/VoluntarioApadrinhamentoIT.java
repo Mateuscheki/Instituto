@@ -34,11 +34,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Mesmo padrão de infraestrutura de teste das etapas anteriores (contexto
- * completo + Testcontainers + ddl-auto=update só no teste — ver
- * BeneficiosHomeSecurityIT/BeneficiarioControllerIT).
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Testcontainers
@@ -123,7 +118,6 @@ class VoluntarioApadrinhamentoIT {
 
         Beneficiario beneficiario = criarBeneficiario("Beneficiário Confirmacao Padrinho", "12345678909");
 
-        // Sem confirmar: volta a tela de confirmação, não vincula ainda
         mockMvc.perform(post("/beneficios/beneficiarios/{id}/padrinho", beneficiario.getId())
                         .with(comoAdmin()).with(csrf())
                         .param("voluntarioId", voluntarioComum.getId().toString()))
@@ -132,7 +126,6 @@ class VoluntarioApadrinhamentoIT {
 
         assertThat(beneficiarioRepository.findById(beneficiario.getId()).orElseThrow().getPadrinho()).isNull();
 
-        // Confirmando + justificativa: vincula e marca a flag is_padrinho
         mockMvc.perform(post("/beneficios/beneficiarios/{id}/padrinho", beneficiario.getId())
                         .with(comoAdmin()).with(csrf())
                         .param("voluntarioId", voluntarioComum.getId().toString())
@@ -177,13 +170,11 @@ class VoluntarioApadrinhamentoIT {
         retirada.setRegistradoPor("teste");
         retirada = retiradaCestaRepository.save(retirada);
 
-        // Troca o padrinho vinculado ao beneficiário
         apadrinhamentoService.vincular(beneficiario.getId(), padrinhoNovo.getId(), List.of(), null, "teste");
 
         Beneficiario atualizado = beneficiarioRepository.findById(beneficiario.getId()).orElseThrow();
         assertThat(atualizado.getPadrinho().getId()).isEqualTo(padrinhoNovo.getId());
 
-        // A retirada já registrada continua apontando para o padrinho de quando foi feita
         RetiradaCesta retiradaRecarregada = retiradaCestaRepository.findById(retirada.getId()).orElseThrow();
         assertThat(retiradaRecarregada.getPadrinho().getId()).isEqualTo(padrinhoAntigo.getId());
     }

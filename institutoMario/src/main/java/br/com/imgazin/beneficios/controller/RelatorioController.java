@@ -67,8 +67,6 @@ public class RelatorioController {
         model.addAttribute("mes", mes.toString());
         model.addAttribute("dashboard", dto);
 
-        // Listas simples prontas para o Chart.js — monta aqui, não na view, para
-        // não depender de projeção SpringEL complicada dentro do th:inline.
         model.addAttribute("labelsMeses", dto.getSerieRetiradasPorMes().stream().map(d -> d.getMes().toString()).toList());
         model.addAttribute("valoresMeses", dto.getSerieRetiradasPorMes().stream().map(RetiradaMensalDto::getRetiradas).toList());
         model.addAttribute("labelsBairros", dto.getRetiradasPorBairro().stream().map(PorRegiaoDto::getRegiao).toList());
@@ -308,8 +306,6 @@ public class RelatorioController {
         return "beneficios/relatorios/voluntarios";
     }
 
-    // ---- helpers ----
-
     private boolean exportarSeSolicitado(RelatorioFiltro filtro, String nomeRelatorio, String periodo, String nomeAba,
                                           List<String> cabecalhos, List<List<String>> linhas,
                                           HttpServletResponse response) throws IOException {
@@ -355,7 +351,6 @@ public class RelatorioController {
         return valor == null ? "" : valor;
     }
 
-    /** CPF completo só para ADM; demais perfis, mascarado (ver CLAUDE.md/LGPD). */
     private String cpfParaExportacao(String cpf) {
         return temRoleAdm() ? CpfUtils.formatar(cpf) : CpfUtils.mascarar(cpf);
     }

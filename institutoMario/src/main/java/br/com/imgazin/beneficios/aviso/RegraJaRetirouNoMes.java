@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** JA_RETIROU_NO_MES (ALTA): já existe retirada válida deste beneficiário no mês. */
 @Component
 @RequiredArgsConstructor
 public class RegraJaRetirouNoMes implements RegraAvisoRetirada {

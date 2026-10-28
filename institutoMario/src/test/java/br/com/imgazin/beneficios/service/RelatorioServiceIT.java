@@ -24,11 +24,6 @@ import java.time.YearMonth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Critérios de aceite da Etapa 5:
- * "Retiradas canceladas não entram em nenhum total" e
- * "pendentes + retiradas do mês = total de aptos do mês".
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 class RelatorioServiceIT {
@@ -56,7 +51,6 @@ class RelatorioServiceIT {
         YearMonth mesAtual = YearMonth.now();
         LocalDate mesData = mesAtual.atDay(1);
 
-        // Apto que retirou este mês (conta em "retiradasDoMes")
         Beneficiario retirou = criarBeneficiario("Aptos Retirou Teste", "11144477735", StatusBeneficiario.RETIRADO_MES_ATUAL);
         RetiradaCesta valida = new RetiradaCesta();
         valida.setBeneficiario(retirou);
@@ -68,10 +62,8 @@ class RelatorioServiceIT {
         valida.setRegistradoPor("teste");
         retiradaCestaRepository.save(valida);
 
-        // Apto que ainda não retirou (conta em "pendentes")
         criarBeneficiario("Aptos Pendente Teste", "12345678909", StatusBeneficiario.APTO_MES_ATUAL);
 
-        // Beneficiário com retirada CANCELADA no mês — não deve contar em nada
         Beneficiario cancelou = criarBeneficiario("Aptos Cancelou Teste", "22233344405", StatusBeneficiario.APTO_MES_ATUAL);
         RetiradaCesta cancelada = new RetiradaCesta();
         cancelada.setBeneficiario(cancelou);
@@ -86,12 +78,9 @@ class RelatorioServiceIT {
 
         DashboardDto dashboard = relatorioService.dashboard(mesAtual);
 
-        // "Pendente" e "Cancelou" continuam APTO_MES_ATUAL (a retirada cancelada não
-        // muda status); só "Retirou" conta em retiradasDoMes.
         assertThat(dashboard.getPendentes()).isEqualTo(2L);
         assertThat(dashboard.getRetiradasDoMes()).isEqualTo(1L);
         assertThat(dashboard.getPendentes() + dashboard.getRetiradasDoMes()).isEqualTo(dashboard.getAptosNoMes());
-        // A retirada cancelada tinha 5 cestas — se ela contasse, o total seria 7, não 2.
         assertThat(dashboard.getCestasEntregues()).isEqualTo(2L);
     }
 

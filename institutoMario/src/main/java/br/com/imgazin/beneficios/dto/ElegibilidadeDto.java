@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Painel de elegibilidade exibido antes do formulário de retirada. */
 @Data
 public class ElegibilidadeDto {
     private Long beneficiarioId;

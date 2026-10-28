@@ -6,7 +6,6 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-/** Histórico completo de retiradas de um beneficiário, com resumo (Etapa 3, entregável). */
 @Data
 public class HistoricoBeneficiarioDto {
     private Long beneficiarioId;

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-/** SEM_RETIRADA_HA_MESES (INFO): nenhuma retirada válida nos últimos 3 meses ANTES do mês sendo registrado. */
 @Component
 @RequiredArgsConstructor
 public class RegraSemRetiradaHaMeses implements RegraAvisoRetirada {

@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
-<!--
-  Mesmo menu do restante do sistema (ver templates/index.html :: sidebar),
-  com o item "Benefícios" adicionado e restrito a ADM. A view por trás da
-  URL já é protegida pelo SecurityFilterChain (SecurityConfig,
-  beneficiosSecurityChain) — o sec:authorize aqui é só para não OFERECER um
-  link que o usuário não pode acessar, nunca a única barreira.
--->
 <div class="sidebar" th:fragment="sidebar">
 
     <button class="sidebar-toggle" id="menu-close-toggle">

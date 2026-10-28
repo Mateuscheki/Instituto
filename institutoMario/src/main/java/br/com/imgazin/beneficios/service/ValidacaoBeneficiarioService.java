@@ -9,11 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Motor de avisos: executa todas as {@link RegraAviso} registradas como bean
- * em cadeia e concatena os avisos. Não decide o que fazer com eles — quem
- * decide é {@link BeneficiarioService} (e o fluxo do controller).
- */
 @Service
 @RequiredArgsConstructor
 public class ValidacaoBeneficiarioService {

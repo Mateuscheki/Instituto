@@ -28,7 +28,7 @@ class RegraNomeSimilarTest {
 
         Beneficiario parecido = new Beneficiario();
         parecido.setId(4L);
-        parecido.setNome("João da Silva Santos"); // só o acento muda — normaliza e fica idêntico
+        parecido.setNome("João da Silva Santos");
 
         when(beneficiarioRepository.findByAtivoTrue()).thenReturn(List.of(parecido));
 

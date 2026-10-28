@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * CSV em UTF-8 com BOM e separador `;` — é isso que faz o Excel em pt-BR
- * abrir com a acentuação correta (ver CLAUDE.md, Etapa 5).
+ * abrir com a acentuação correta.
  */
 @Service
 public class ExportadorCsvService implements ExportadorRelatorio {

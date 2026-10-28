@@ -8,13 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-/**
- * Diz ao Spring Data JPA Auditing quem é o "autor" da gravação atual, para
- * preencher {@code criado_por}/{@code atualizado_por}. O login da aplicação
- * como um todo é o {@code edu.unialfa.institutoMario.model.Usuario} (ver
- * {@code SecurityFilter}); aqui só lemos o nome dele a partir do
- * SecurityContext — nenhuma lógica de autenticação nova.
- */
 @Component("auditorAwareImpl")
 public class AuditorAwareImpl implements AuditorAware<String> {
 

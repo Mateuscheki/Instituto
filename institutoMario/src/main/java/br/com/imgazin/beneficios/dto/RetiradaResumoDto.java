@@ -7,7 +7,6 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/** Uma linha do histórico de retiradas exibido na ficha do beneficiário. */
 @Data
 @AllArgsConstructor
 public class RetiradaResumoDto {

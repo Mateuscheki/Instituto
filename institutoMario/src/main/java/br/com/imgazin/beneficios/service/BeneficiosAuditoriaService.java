@@ -15,13 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 
-/**
- * Trilha de auditoria própria do módulo (tabela {@code beneficios_auditoria}
- * — LGPD: toda consulta/gravação de dado sensível fica registrada). Mesmo
- * espírito do {@code LogAuditoriaService} legado, mas não reaproveitado
- * diretamente porque grava numa tabela e com colunas diferentes
- * (inclusive {@code dados_antes}/{@code dados_depois} e {@code perfil}).
- */
 @Service
 @RequiredArgsConstructor
 public class BeneficiosAuditoriaService {

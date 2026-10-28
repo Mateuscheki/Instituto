@@ -56,10 +56,8 @@ public class Usuario implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(roleBase));
 
-        // O módulo Benefícios usa perfis próprios (ADM/GESTAO/ATENDIMENTO —
-        // ver CLAUDE.md do módulo). Nesta primeira etapa ainda não existe um
-        // cadastro de perfis dedicado a Benefícios, então o Administrador do
-        // sistema (tipoUsuario=1) também assume o papel de ADM do módulo.
+        // O módulo Benefícios exige ROLE_ADM; o Administrador do sistema
+        // (tipoUsuario=1) também assume esse papel.
         if ("ROLE_ADMIN".equals(roleBase)) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADM"));
         }

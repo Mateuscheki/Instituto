@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.util.Map;
 
-/** Agregados do público atendido — só de ativos. */
 @Data
 public class PerfilSocialDto {
     private long totalBeneficiarios;

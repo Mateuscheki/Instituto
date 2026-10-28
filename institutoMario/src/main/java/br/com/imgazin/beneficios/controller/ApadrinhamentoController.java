@@ -22,12 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-/**
- * Vínculo padrinho ↔ beneficiário. Fora do prefixo {@code /beneficios/beneficiarios}
- * e {@code /beneficios/voluntarios} de propósito — as rotas do CLAUDE.md misturam
- * os dois recursos ({@code /beneficios/beneficiarios/{id}/padrinho} e
- * {@code /beneficios/padrinhos/{voluntarioId}/apadrinhados}).
- */
 @Controller
 @RequiredArgsConstructor
 public class ApadrinhamentoController {

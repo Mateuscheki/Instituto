@@ -4,11 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * CPF de teste usado: 111.444.777-35 — dígitos verificadores conferidos à
- * mão pelo algoritmo da Receita Federal (documentado no javadoc de
- * {@link CpfUtils#isValido(String)}), não inventado.
- */
 class CpfUtilsTest {
 
     private static final String CPF_VALIDO_FORMATADO = "111.444.777-35";

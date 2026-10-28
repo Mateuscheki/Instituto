@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** RETIRANTE_E_BENEFICIARIO (ATENCAO): o CPF do retirante pertence a outro beneficiário ativo. */
 @Component
 @RequiredArgsConstructor
 public class RegraRetiranteEBeneficiario implements RegraAvisoRetirada {

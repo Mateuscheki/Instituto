@@ -1,6 +1,5 @@
 package br.com.imgazin.beneficios.domain;
 
-/** Nível de atenção de um aviso de confirmação exibido ao operador. */
 public enum SeveridadeAviso {
 
     INFO("Informativo", "badge-info"),

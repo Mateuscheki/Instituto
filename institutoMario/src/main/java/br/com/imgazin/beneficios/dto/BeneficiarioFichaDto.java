@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Ficha completa do beneficiário (view {@code beneficiarios/ficha}). */
 @Data
 public class BeneficiarioFichaDto {
 

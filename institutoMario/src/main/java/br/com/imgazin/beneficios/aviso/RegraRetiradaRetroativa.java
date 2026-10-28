@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-/** RETIRADA_RETROATIVA (INFO): mês de referência diferente do mês corrente. */
 @Component
 public class RegraRetiradaRetroativa implements RegraAvisoRetirada {
 

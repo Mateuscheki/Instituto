@@ -28,9 +28,6 @@
         decidiu prosseguir, quando e por quê.
     </div>
 
-    <!-- Tudo dentro de UM único form: resumo é só leitura, os hidden repõem o
-         formulário inteiro, os checkboxes/justificativa abaixo são o que
-         realmente muda entre "salvar" e "confirmar". -->
     <form th:action="@{/beneficios/beneficiarios/confirmar}" method="post">
         <div th:replace="~{fragments/campos :: hiddensDoForm(campos=${camposOcultos})}"></div>
 

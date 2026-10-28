@@ -2,7 +2,6 @@ package br.com.imgazin.beneficios.form;
 
 import lombok.Data;
 
-/** Filtros do histórico de retiradas (todos opcionais). */
 @Data
 public class RetiradaFiltro {
     private String mes;

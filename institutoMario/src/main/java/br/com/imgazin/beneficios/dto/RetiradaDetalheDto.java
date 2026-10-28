@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Detalhe completo de uma retirada — usado no comprovante e na tela de detalhe. */
 @Data
 public class RetiradaDetalheDto {
     private Long id;

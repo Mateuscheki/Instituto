@@ -7,14 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * "Mesma validação por aviso" do CPF do beneficiário (CLAUDE.md, Etapa 4):
- * CPF com 11 dígitos mas dígito verificador errado gera aviso ALTA, não
- * bloqueia. Só essa regra existe aqui — não precisou da arquitetura de
- * "motor de avisos" plugável das Etapas 2/3 (que existe para várias regras
- * coordenadas); reaproveita a mesma classe {@link Aviso} e o mesmo padrão de
- * tela de confirmação.
- */
 @Service
 public class ValidacaoVoluntarioService {
 
