@@ -8,12 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * RETIRANTE_NAO_CONFERE (ALTA): quando o retirante alega ser o próprio
- * beneficiário, o cônjuge ou a mãe, mas o nome digitado não bate com o
- * cadastrado. Só se aplica a esses três tipos — para padrinho/outro
- * familiar/terceiro autorizado o retirante É, por definição, outra pessoa.
- */
 @Component
 public class RegraRetiranteNaoConfere implements RegraAvisoRetirada {
 

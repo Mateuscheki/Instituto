@@ -23,7 +23,6 @@ import java.util.List;
 @Component
 public class RetiradaMapper {
 
-    /** Monta a entidade a partir do form já validado — não persiste, não decide status do beneficiário. */
     public RetiradaCesta paraEntidade(RetiradaForm form, Beneficiario beneficiario, Voluntario padrinho,
                                        Voluntario voluntarioEntrega, String registradoPor) {
         RetiradaCesta retirada = new RetiradaCesta();

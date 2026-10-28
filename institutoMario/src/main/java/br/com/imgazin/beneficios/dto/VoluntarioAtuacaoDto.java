@@ -5,7 +5,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Tela `voluntarios/atuacao`: entregas por mês, apadrinhados, última atividade. */
 @Data
 public class VoluntarioAtuacaoDto {
     private Long id;

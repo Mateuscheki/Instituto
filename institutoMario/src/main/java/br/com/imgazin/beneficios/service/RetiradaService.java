@@ -41,10 +41,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Orquestra a persistência da retirada. Controller nunca grava nada
- * diretamente (ver CLAUDE.md).
- */
 @Service
 @RequiredArgsConstructor
 public class RetiradaService {
@@ -96,7 +92,6 @@ public class RetiradaService {
 
         registrarConfirmacoes(retirada, avisosConfirmados, justificativa, usuarioLogado);
 
-        // Regra automática: após gravar, o beneficiário fica RETIRADO_MES_ATUAL.
         beneficiario.setStatus(StatusBeneficiario.RETIRADO_MES_ATUAL);
         beneficiarioRepository.save(beneficiario);
 
@@ -106,7 +101,6 @@ public class RetiradaService {
         return retirada;
     }
 
-    /** Se padrinhoId veio vazio no form, usa o padrinho vinculado ao beneficiário (pode ser null). */
     private Voluntario resolverPadrinho(RetiradaForm form, Beneficiario beneficiario) {
         if (form.getPadrinhoId() != null && !form.getPadrinhoId().isBlank()) {
             return voluntarioRepository.findById(Long.valueOf(form.getPadrinhoId().trim())).orElse(null);
@@ -142,8 +136,6 @@ public class RetiradaService {
         retirada.setCanceladaPor(usuarioLogado);
         retiradaCestaRepository.save(retirada);
 
-        // Se essa era a única retirada válida do mês e o beneficiário ainda está
-        // marcado como "já retirou", devolve para apto — sem esperar o job do dia 1º.
         Beneficiario beneficiario = retirada.getBeneficiario();
         boolean aindaTemRetiradaValidaNoMes = retiradaCestaRepository
                 .existsByBeneficiarioIdAndMesReferenciaAndCanceladaFalse(beneficiario.getId(), retirada.getMesReferencia());
@@ -172,11 +164,6 @@ public class RetiradaService {
         return mapper.paraDetalhe(retirada, confirmacoes);
     }
 
-    /**
-     * Resumo do histórico de um beneficiário (entregável da Etapa 3): total de
-     * cestas, meses consecutivos com retirada, meses sem retirar e distribuição
-     * por tipo de retirante — só considerando retiradas válidas (não canceladas).
-     */
     public HistoricoBeneficiarioDto historicoDoBeneficiario(Long beneficiarioId) {
         Beneficiario beneficiario = beneficiarioRepository.findById(beneficiarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Beneficiário não encontrado: " + beneficiarioId));
@@ -221,7 +208,6 @@ public class RetiradaService {
         return contador;
     }
 
-    /** Meses corridos, sem retirada válida, entre a última retirada (ou o cadastro) e hoje. */
     private int calcularMesesSemRetirar(List<RetiradaCesta> validasOrdenadasDesc, Beneficiario beneficiario) {
         YearMonth referencia;
         if (!validasOrdenadasDesc.isEmpty()) {
@@ -254,7 +240,6 @@ public class RetiradaService {
                 LocalDate mes = YearMonth.parse(filtro.getMes()).atDay(1);
                 spec = spec.and((root, query, cb) -> cb.equal(root.get("mesReferencia"), mes));
             } catch (Exception ignored) {
-                // filtro mal formado é apenas ignorado, não quebra a listagem
             }
         }
         if (filtro.getDataInicio() != null && !filtro.getDataInicio().isBlank()) {

@@ -15,19 +15,6 @@ import org.springframework.validation.Validator;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * Validação ESTRUTURAL do formulário — formato, não regra de negócio. Erros
- * daqui são sempre bloqueantes (a tela volta com {@code BindingResult} e o
- * que foi digitado preservado). Regra de negócio (CPF com dígito
- * verificador errado, duplicidade de endereço/nome/telefone etc.) é o motor
- * de avisos ({@link br.com.imgazin.beneficios.service.ValidacaoBeneficiarioService}),
- * nunca bloqueia por si só.
- * <p>
- * Duplicidade de CPF (o único caso de negócio que também bloqueia) é
- * verificada à parte, no {@code BeneficiarioService}, porque depende do
- * fluxo (criação x edição) e do que fazer com o resultado (link para o
- * cadastro existente) — não cabe num Validator genérico.
- */
 @Component
 @RequiredArgsConstructor
 public class BeneficiarioFormValidator implements Validator {
@@ -136,7 +123,7 @@ public class BeneficiarioFormValidator implements Validator {
 
     private void validarStatus(String valor, Errors errors) {
         if (valor == null || valor.isBlank()) {
-            return; // BeneficiarioService aplica o padrão AGUARDANDO_ANALISE
+            return;
         }
         try {
             StatusBeneficiario.valueOf(valor);

@@ -1,17 +1,10 @@
 package br.com.imgazin.beneficios.util;
 
-/**
- * Utilitários de CPF do módulo Benefícios: normalizar (11 dígitos, sem
- * pontuação — é assim que gravamos, ver CLAUDE.md/LGPD), formatar para
- * exibição, validar dígito verificador e mascarar para quem não deveria ver
- * o CPF completo.
- */
 public final class CpfUtils {
 
     private CpfUtils() {
     }
 
-    /** Remove tudo que não for dígito. Não valida tamanho nem dígito verificador. */
     public static String normalizar(String cpf) {
         if (cpf == null) {
             return null;
@@ -19,7 +12,6 @@ public final class CpfUtils {
         return cpf.replaceAll("\\D", "");
     }
 
-    /** "12345678900" -> "123.456.789-00". Se não tiver 11 dígitos, devolve o valor original. */
     public static String formatar(String cpf) {
         String normalizado = normalizar(cpf);
         if (normalizado == null || normalizado.length() != 11) {
@@ -28,7 +20,6 @@ public final class CpfUtils {
         return normalizado.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
     }
 
-    /** "12345678900" -> "***.456.789-**". Se não tiver 11 dígitos, devolve totalmente mascarado. */
     public static String mascarar(String cpf) {
         String normalizado = normalizar(cpf);
         if (normalizado == null || normalizado.length() != 11) {

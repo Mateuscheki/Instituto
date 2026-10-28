@@ -6,11 +6,6 @@ import br.com.imgazin.beneficios.form.RetiradaForm;
 import java.time.LocalDate;
 import java.time.YearMonth;
 
-/**
- * Entrada do motor de avisos de retirada: o formulário + o beneficiário já
- * resolvido (por CPF) + o mês de referência já convertido para
- * {@link LocalDate} (sempre o dia 1º — ver CLAUDE.md do módulo).
- */
 public class ContextoAvaliacaoRetirada {
 
     private final RetiradaForm form;

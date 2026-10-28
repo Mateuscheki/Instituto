@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** BENEFICIARIO_SUSPENSO (ALTA). */
 @Component
 public class RegraBeneficiarioSuspenso implements RegraAvisoRetirada {
 

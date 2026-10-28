@@ -22,9 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Testes de ponta a ponta do fluxo de cadastro (ver CLAUDE.md do módulo,
- * Etapa 2). Sobe o contexto completo (mesma razão do
- * {@code BeneficiosHomeSecurityIT} da Etapa 1: a SecurityConfig não dá pra
+ * Testes de ponta a ponta do fluxo de cadastro. Sobe o contexto completo
+ * (mesma razão do {@code BeneficiosHomeSecurityIT}: a SecurityConfig não dá pra
  * fatiar sem mockar meio sistema legado) com Testcontainers + ddl-auto=update
  * só para o teste (banco fresco: Flyway cria as tabelas de Benefícios,
  * Hibernate cria as legadas).

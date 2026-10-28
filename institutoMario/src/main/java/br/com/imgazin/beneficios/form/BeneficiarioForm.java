@@ -16,7 +16,6 @@ public class BeneficiarioForm {
 
     private Long id;
 
-    // Identificação
     private String cpf;
     private String nome;
     private String dataNascimento;
@@ -26,7 +25,6 @@ public class BeneficiarioForm {
     private String nomeConjuge;
     private String cpfConjuge;
 
-    // Composição familiar
     private String pessoasResidencia;
     private String temFilhos;
     private String quantidadeFilhos;
@@ -38,7 +36,6 @@ public class BeneficiarioForm {
     private String temTrabalho;
     private String rendaFamiliar;
 
-    // Endereço
     private String enderecoCompleto;
     private String cep;
     private String rua;
@@ -48,7 +45,6 @@ public class BeneficiarioForm {
     private String cidade;
     private String uf;
 
-    // Benefício
     private String padrinhoId;
     private String prazoFinalBeneficio;
     private String status;

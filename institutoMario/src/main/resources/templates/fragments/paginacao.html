@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!--
-  Paginação genérica para qualquer org.springframework.data.domain.Page.
-  Uso: <div th:replace="~{fragments/paginacao :: paginacao(pagina=${minhaPage}, baseUrl='/beneficios/algo')}"></div>
-  `baseUrl` é só o caminho — o parâmetro `pagina` é anexado por este fragmento.
--->
 <div th:fragment="paginacao(pagina, baseUrl)" th:if="${pagina != null and pagina.totalPages > 1}">
     <nav aria-label="Paginação">
         <ul class="pagination justify-content-center">

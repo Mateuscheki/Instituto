@@ -14,10 +14,6 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 
-/**
- * Validação estrutural do formulário de retirada — formato, não regra de
- * negócio (isso é o motor de avisos, ver {@link br.com.imgazin.beneficios.service.ValidacaoRetiradaService}).
- */
 @Component
 @RequiredArgsConstructor
 public class RetiradaFormValidator implements Validator {

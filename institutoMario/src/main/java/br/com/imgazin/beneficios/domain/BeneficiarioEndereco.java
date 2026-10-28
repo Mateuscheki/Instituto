@@ -14,13 +14,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Endereço do beneficiário (1:1). {@code chaveResidencia} é um valor
- * derivado e normalizado (cep + número + complemento, minúsculo, sem acento,
- * sem espaço) usado para detectar famílias no mesmo endereço — a lógica de
- * normalização em si é regra de negócio e fica para uma etapa seguinte
- * (aqui só existe a coluna e o índice).
- */
 @Getter
 @Setter
 @Entity

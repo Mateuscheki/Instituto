@@ -1,9 +1,3 @@
-/*
- * Módulo Benefícios — identidade visual (ver CLAUDE.md do módulo).
- * Reaproveita os tons institucionais já usados no resto do sistema
- * (ver static/css/style.css: sidebar #004aad / hover #003080 / fundo #f7f9fc)
- * em vez de inventar uma paleta nova.
- */
 
 :root {
     --beneficios-azul: #004aad;
@@ -13,7 +7,6 @@
     --beneficios-borda: #e3e8ef;
 }
 
-/* Badge superior de seção, ex.: "CADASTRO E ATENDIMENTO" */
 .beneficios-badge-secao {
     display: inline-block;
     background-color: var(--beneficios-azul);
@@ -27,14 +20,12 @@
     margin-bottom: 0.6rem;
 }
 
-/* Título de seção em azul-marinho institucional */
 .beneficios-titulo-secao {
     color: var(--beneficios-azul-escuro);
     font-weight: 700;
     margin-bottom: 0.25rem;
 }
 
-/* Faixa de status no topo do cartão, ex.: "Perfil ativo: Gestão..." */
 .beneficios-faixa-status {
     background-color: var(--beneficios-fundo);
     border: 1px solid var(--beneficios-borda);
@@ -46,7 +37,6 @@
     margin-bottom: 1rem;
 }
 
-/* Cartão padrão do módulo */
 .beneficios-card {
     border: 1px solid var(--beneficios-borda);
     border-radius: 0.5rem;
@@ -56,7 +46,6 @@
     padding: 1.5rem;
 }
 
-/* Label de campo: caixa alta, cinza-azulado (ver fragments/campos.html) */
 .campo-label {
     text-transform: uppercase;
     font-size: 0.72rem;
@@ -65,7 +54,6 @@
     color: var(--beneficios-cinza-azulado);
 }
 
-/* Ações do módulo */
 .btn-beneficios-primario {
     background-color: var(--beneficios-azul);
     border-color: var(--beneficios-azul);
@@ -84,14 +72,12 @@
     color: var(--beneficios-cinza-azulado);
 }
 
-/* Badges de status (StatusBeneficiario / SeveridadeAviso) */
 .badge-sucesso { background-color: #1e7e34; color: #fff; }
 .badge-info { background-color: #0d6efd; color: #fff; }
 .badge-alerta { background-color: #c9971c; color: #fff; }
 .badge-perigo { background-color: #b02a37; color: #fff; }
 .badge-neutro { background-color: #6c757d; color: #fff; }
 
-/* Cards de atalho da home do módulo */
 .beneficios-atalho {
     display: block;
     height: 100%;
@@ -126,11 +112,6 @@
     color: var(--beneficios-cinza-azulado);
 }
 
-/*
- * Comprovante de retirada (Etapa 3): imprime em uma página, sem menu
- * lateral. `.no-print` marca tudo que só faz sentido na tela (sidebar,
- * botões de ação) — ver templates/retiradas/comprovante.html.
- */
 @media print {
     .no-print {
         display: none !important;

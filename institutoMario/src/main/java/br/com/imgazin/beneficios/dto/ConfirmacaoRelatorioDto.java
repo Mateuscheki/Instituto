@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** Relatório de conformidade: todo aviso confirmado no período. */
 @Data
 @AllArgsConstructor
 public class ConfirmacaoRelatorioDto {

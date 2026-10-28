@@ -62,7 +62,7 @@ public class SecurityConfig {
 
 
     // O módulo Benefícios lida com dado sensível (CPF, renda, endereço) via
-    // formulário HTML tradicional (nunca API/JSON — ver CLAUDE.md do módulo),
+    // formulário HTML tradicional (nunca API/JSON),
     // então precisa de CSRF LIGADO, diferente do resto da aplicação web
     // (webSecurityChain, abaixo, desliga CSRF por decisão pré-existente do
     // projeto). Por isso ganha sua própria chain, escopada só a

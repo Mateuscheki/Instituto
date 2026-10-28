@@ -16,13 +16,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Trilha de auditoria do módulo Benefícios: quem consultou/alterou/exportou
- * qual registro, quando e com qual perfil — exigida pela LGPD para dado
- * sensível (CPF, endereço, renda). Referência polimórfica simples
- * ({@code entidade} + {@code entidadeId}), sem FK, de propósito: o alvo pode
- * ser qualquer entidade do módulo.
- */
 @Getter
 @Setter
 @Entity

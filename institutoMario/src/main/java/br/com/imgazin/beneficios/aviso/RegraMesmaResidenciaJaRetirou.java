@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-/** MESMA_RESIDENCIA_JA_RETIROU (ATENCAO): outro beneficiário da mesma residência já retirou no mês. */
 @Component
 @RequiredArgsConstructor
 public class RegraMesmaResidenciaJaRetirou implements RegraAvisoRetirada {

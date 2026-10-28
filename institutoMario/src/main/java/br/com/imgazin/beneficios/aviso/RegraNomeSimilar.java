@@ -8,12 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * NOME_SIMILAR (INFO): nome com similaridade > 0,85 (Levenshtein sobre texto
- * normalizado — sem acento, minúsculo) com outro cadastro ativo. Sem
- * extensão de similaridade de texto no MySQL (ao contrário do
- * {@code similarity} do Postgres), então a comparação é feita em memória.
- */
 @Component
 @RequiredArgsConstructor
 public class RegraNomeSimilar implements RegraAviso {

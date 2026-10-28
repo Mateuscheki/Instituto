@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/** PRAZO_VENCIDO (ATENCAO): prazo final do benefício anterior a hoje. */
 @Component
 public class RegraPrazoVencido implements RegraAviso {
 

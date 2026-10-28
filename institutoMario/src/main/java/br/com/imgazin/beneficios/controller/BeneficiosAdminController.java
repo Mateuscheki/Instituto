@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Ações administrativas do módulo. Todo {@code /beneficios/**} já exige
- * ROLE_ADM (ver SecurityConfig) — não precisa de checagem extra aqui.
- */
 @Controller
 @RequestMapping("/beneficios/admin")
 @RequiredArgsConstructor

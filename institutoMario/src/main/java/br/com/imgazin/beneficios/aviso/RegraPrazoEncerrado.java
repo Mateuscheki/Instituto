@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-/** PRAZO_ENCERRADO (ALTA): prazo final do benefício já passou. */
 @Component
 public class RegraPrazoEncerrado implements RegraAvisoRetirada {
 

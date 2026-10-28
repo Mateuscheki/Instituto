@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** MESMO_NOME_MAE (ATENCAO): outro beneficiário ativo com a mesma mãe (provável irmão). */
 @Component
 @RequiredArgsConstructor
 public class RegraMesmoNomeMae implements RegraAviso {

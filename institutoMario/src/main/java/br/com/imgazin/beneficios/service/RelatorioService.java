@@ -36,12 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Toda consulta agrega no banco (via {@link RelatorioRepository}), nunca
- * carregando lista de entidades só para somar em Java — exceção feita a
- * pequenas listas já pequenas por natureza (pendentes de um mês, histórico
- * de um beneficiário), onde o N+1 é aceitável para o volume de uma ONG.
- */
 @Service
 @RequiredArgsConstructor
 public class RelatorioService {
@@ -96,7 +90,7 @@ public class RelatorioService {
             long retiradas = (Long) linha[1];
             long cestas = ((Number) linha[2]).longValue();
             long distintos = (Long) linha[3];
-            // Sem tabela de resumo histórico (ver CLAUDE.md: melhoria futura), a
+            // Sem tabela de resumo histórico, a
             // "adesão" de meses passados é aproximada pelo total de ativos atual.
             resultado.add(new RetiradaMensalDto(YearMonth.from(mesData), retiradas, cestas, distintos, percentual(distintos, totalAtivos)));
         }
@@ -188,10 +182,9 @@ public class RelatorioService {
 
         Map<YearMonth, RetiradaCesta> porMes = new LinkedHashMap<>();
         for (RetiradaCesta r : retiradaCestaRepository.findByBeneficiarioIdOrderByMesReferenciaDesc(beneficiarioId)) {
-            porMes.putIfAbsent(YearMonth.from(r.getMesReferencia()), r); // se houver 2 no mês, prioriza a mais recente inserida primeiro na lista já ordenada
+            porMes.putIfAbsent(YearMonth.from(r.getMesReferencia()), r); // com 2 no mês, prevalece a primeira da lista já ordenada
         }
 
-        // Janela: desde o cadastro, limitada a no máximo 24 meses para trás.
         YearMonth atual = YearMonth.now();
         YearMonth criadoMes = beneficiario.getCriadoEm() != null ? YearMonth.from(beneficiario.getCriadoEm()) : atual.minusMonths(11);
         YearMonth limiteMaximo = atual.minusMonths(23);

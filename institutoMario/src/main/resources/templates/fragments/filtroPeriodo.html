@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!--
-  Fragmento único de filtro dos relatórios (Etapa 5) — cada tela mostra só os
-  campos que fazem sentido pra ela via os parâmetros booleanos. Os botões de
-  exportação/impressão reaproveitam os MESMOS valores de filtro atuais.
--->
 <div th:fragment="filtroPeriodo(acaoUrl, filtro, mostrarMes, mostrarPeriodo, mostrarCidadeBairro, mostrarPadrinho, padrinhos, exportar)"
      class="beneficios-card card mb-3 no-print">
     <div class="card-body">

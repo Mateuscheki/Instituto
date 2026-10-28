@@ -11,5 +11,5 @@ import java.time.YearMonth;
 public class LinhaTempoBeneficiarioDto {
     private YearMonth mes;
     private String situacao; // RETIROU, NAO_RETIROU, CANCELADA
-    private TipoRetirante tipoRetirante; // null quando NAO_RETIROU
+    private TipoRetirante tipoRetirante;
 }

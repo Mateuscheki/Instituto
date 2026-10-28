@@ -1,6 +1,5 @@
 package br.com.imgazin.beneficios.domain;
 
-/** Situação do beneficiário no painel de elegibilidade da tela de retirada. */
 public enum SituacaoElegibilidade {
 
     ELEGIVEL("Elegível para retirar", "badge-sucesso"),

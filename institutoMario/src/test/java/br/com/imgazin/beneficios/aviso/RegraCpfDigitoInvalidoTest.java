@@ -13,7 +13,6 @@ class RegraCpfDigitoInvalidoTest {
     void geraAvisoAltaParaCpfComDigitoErrado() {
         BeneficiarioForm form = new BeneficiarioForm();
         form.setCpf("111.444.777-30"); // base válida 111.444.777-35, dígito trocado
-
         var avisos = regra.avaliar(form);
 
         assertThat(avisos).hasSize(1);
@@ -37,7 +36,6 @@ class RegraCpfDigitoInvalidoTest {
 
     @Test
     void naoGeraAvisoParaCpfComTamanhoErrado() {
-        // erro de formulário (bloqueante), não aviso — não é responsabilidade desta regra
         BeneficiarioForm form = new BeneficiarioForm();
         form.setCpf("123");
         assertThat(regra.avaliar(form)).isEmpty();

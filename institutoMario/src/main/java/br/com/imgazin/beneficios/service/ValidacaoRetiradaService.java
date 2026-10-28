@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Motor de avisos da retirada — mesmo padrão de {@link ValidacaoBeneficiarioService} (Etapa 2). */
 @Service
 @RequiredArgsConstructor
 public class ValidacaoRetiradaService {

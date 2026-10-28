@@ -34,11 +34,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Controller fino (ver CLAUDE.md): recebe form, chama service, popula
- * Model, devolve a view. Nenhuma regra de negócio aqui — inclusive a
- * verificação de CPF duplicado e o motor de avisos vivem nos services.
- */
 @Controller
 @RequestMapping("/beneficios/beneficiarios")
 @RequiredArgsConstructor
@@ -93,7 +88,7 @@ public class BeneficiarioController {
     @GetMapping("/novo")
     public String novo(@RequestParam(required = false) String cpf, Model model) {
         BeneficiarioForm form = new BeneficiarioForm();
-        form.setCpf(cpf); // vindo da busca sem resultado — poupa o operador de redigitar
+        form.setCpf(cpf);
 
         model.addAttribute("tituloPagina", "Novo beneficiário");
         model.addAttribute("beneficiarioForm", form);
@@ -167,8 +162,6 @@ public class BeneficiarioController {
         boolean faltaJustificativa = exigeJustificativa && (justificativa == null || justificativa.isBlank());
 
         if (!altasNaoConfirmados.isEmpty() || faltaJustificativa) {
-            // Exigência de confirmação explícita, não recusa: volta para a MESMA
-            // tela de confirmação com o que faltou destacado.
             prepararModelDaConfirmacao(model, form, avisosAtuais);
             model.addAttribute("avisosDestacados", altasNaoConfirmados);
             model.addAttribute("avisosJaConfirmados", confirmados);
@@ -188,12 +181,6 @@ public class BeneficiarioController {
         return "redirect:/beneficios/beneficiarios/" + salvo.getId();
     }
 
-    /**
-     * "Voltar e corrigir" na tela de confirmação: reposta os mesmos hidden
-     * (ver {@code fragments/campos.html :: hiddensDoForm}) e volta para o
-     * formulário SEM perder nada digitado — sem revalidar nada aqui, quem
-     * decide se está tudo certo é o próximo /salvar.
-     */
     @PostMapping("/voltar")
     public String voltarParaFormulario(@ModelAttribute("beneficiarioForm") BeneficiarioForm form, Model model) {
         model.addAttribute("tituloPagina", form.getId() == null ? "Novo beneficiário" : "Editar beneficiário");
@@ -236,11 +223,9 @@ public class BeneficiarioController {
         return "redirect:/beneficios/beneficiarios/" + id;
     }
 
-    // ---- helpers privados de Model (controller continua fino: só monta o que a view precisa) ----
-
     private void verificarCpfDuplicadoSeNecessario(BeneficiarioForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasFieldErrors("cpf")) {
-            return; // formato já inválido — não faz sentido checar duplicidade
+            return;
         }
         try {
             beneficiarioService.verificarCpfDuplicado(form);

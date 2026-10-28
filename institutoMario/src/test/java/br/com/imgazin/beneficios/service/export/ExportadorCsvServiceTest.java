@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Critério de aceite: "CSV exportado abre no Excel com acentuação correta". */
 class ExportadorCsvServiceTest {
 
     private final ExportadorCsvService exportador = new ExportadorCsvService();
@@ -22,7 +21,6 @@ class ExportadorCsvServiceTest {
 
         byte[] conteudo = response.getContentAsByteArray();
 
-        // BOM UTF-8 (0xEF 0xBB 0xBF) logo no início — é isso que faz o Excel pt-BR abrir certo
         assertThat(conteudo[0]).isEqualTo((byte) 0xEF);
         assertThat(conteudo[1]).isEqualTo((byte) 0xBB);
         assertThat(conteudo[2]).isEqualTo((byte) 0xBF);

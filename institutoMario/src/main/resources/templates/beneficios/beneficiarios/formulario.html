@@ -21,7 +21,6 @@
     <form th:action="@{/beneficios/beneficiarios/salvar}" th:object="${beneficiarioForm}" method="post">
         <input type="hidden" th:field="*{id}">
 
-        <!-- Identificação -->
         <div class="beneficios-card card mb-3">
             <div class="card-header"><strong>Identificação</strong></div>
             <div class="card-body row">
@@ -62,7 +61,6 @@
             </div>
         </div>
 
-        <!-- Composição familiar -->
         <div class="beneficios-card card mb-3">
             <div class="card-header"><strong>Composição familiar</strong></div>
             <div class="card-body row">
@@ -105,7 +103,6 @@
             </div>
         </div>
 
-        <!-- Endereço -->
         <div class="beneficios-card card mb-3">
             <div class="card-header"><strong>Endereço</strong></div>
             <div class="card-body row">
@@ -138,7 +135,6 @@
             </div>
         </div>
 
-        <!-- Benefício -->
         <div class="beneficios-card card mb-4">
             <div class="card-header"><strong>Benefício</strong></div>
             <div class="card-body row">

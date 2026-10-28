@@ -6,11 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * CPF_DIGITO_INVALIDO (ALTA): o CPF tem 11 dígitos mas reprova no dígito
- * verificador. Não bloqueia — existe público real com documento irregular
- * (CLAUDE.md do módulo) — mas exige confirmação explícita.
- */
 @Component
 public class RegraCpfDigitoInvalido implements RegraAviso {
 

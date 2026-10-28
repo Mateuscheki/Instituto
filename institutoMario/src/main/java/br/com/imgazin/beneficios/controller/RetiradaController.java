@@ -41,11 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Controller fino (ver CLAUDE.md): recebe form, chama service, popula
- * Model, devolve a view. Reusa o mesmo padrão de tela de confirmação de
- * avisos da Etapa 2 (hidden fields via FormUtils + fragments/campos.html).
- */
 @Controller
 @RequestMapping("/beneficios/retiradas")
 @RequiredArgsConstructor
@@ -191,7 +186,6 @@ public class RetiradaController {
         }
     }
 
-    /** "Voltar e corrigir": reexibe o formulário com tudo que foi digitado, sem revalidar nada aqui. */
     @PostMapping("/voltar")
     public String voltar(@ModelAttribute("retiradaForm") RetiradaForm form, Model model) {
         return reexibirFormulario(form, model);
@@ -233,8 +227,6 @@ public class RetiradaController {
         redirectAttributes.addFlashAttribute("sucesso", "Retirada cancelada com sucesso.");
         return "redirect:/beneficios/retiradas/" + id;
     }
-
-    // ---- helpers privados de Model ----
 
     private String reexibirFormulario(RetiradaForm form, Model model) {
         model.addAttribute("tituloPagina", "Registrar retirada");

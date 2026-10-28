@@ -1,11 +1,3 @@
-/**
- * JS mínimo do módulo Benefícios: máscaras de CPF/telefone/CEP nos campos
- * marcados com as classes .mascara-cpf/.mascara-telefone/.mascara-cep (ver
- * templates/fragments/campos.html), e um helper genérico para
- * habilitar/desabilitar campos dependentes (ex.: "tem filhos?" -> libera
- * "quantidade de filhos"). Nenhuma regra de negócio aqui — só formatação de
- * digitação e toggle de UI.
- */
 (function () {
     "use strict";
 
@@ -52,11 +44,6 @@
         });
     }
 
-    /**
-     * Habilita/desabilita e limpa um campo dependente conforme a resposta de
-     * um campo "gatilho" (ex.: select SIM/NAO/NAO_INFORMADO). Uso típico:
-     *   beneficiosToggleDependente('#temFilhos', '#quantidadeFilhos', ['SIM']);
-     */
     window.beneficiosToggleDependente = function (seletorGatilho, seletorDependente, valoresQueHabilitam) {
         const gatilho = document.querySelector(seletorGatilho);
         const dependente = document.querySelector(seletorDependente);
@@ -77,12 +64,6 @@
         atualizar();
     };
 
-    /**
-     * Liga a busca automática de endereço por CEP (ViaCEP) a um campo de CEP.
-     * Se a consulta falhar (rede, CEP inexistente, timeout), não faz nada —
-     * o operador preenche manualmente, a tela nunca trava.
-     * Uso: beneficiosLigarBuscaCep('#cep', {rua:'#rua', bairro:'#bairro', cidade:'#cidade', uf:'#uf'});
-     */
     window.beneficiosLigarBuscaCep = function (seletorCep, seletoresDestino) {
         const campoCep = document.querySelector(seletorCep);
         if (!campoCep) {

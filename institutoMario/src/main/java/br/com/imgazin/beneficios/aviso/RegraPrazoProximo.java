@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/** PRAZO_PROXIMO (INFO): prazo final do benefício nos próximos 30 dias. */
 @Component
 public class RegraPrazoProximo implements RegraAviso {
 

@@ -17,14 +17,6 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Roda a migration V1 num Postgres limpo (Testcontainers) e confere que as 6
- * tabelas do módulo Benefícios sobem sem erro — não sobe o Spring context
- * inteiro de propósito, para não esbarrar nas ~20 entidades legadas do
- * restante do sistema (que não têm migration nenhuma, só
- * ddl-auto=update histórico). Ver nota em application.properties sobre
- * spring.flyway.baseline-on-migrate.
- */
 @Testcontainers
 class FlywayMigrationIT {
 
@@ -51,8 +43,6 @@ class FlywayMigrationIT {
         try (Connection conexao = DriverManager.getConnection(
                 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
              Statement statement = conexao.createStatement();
-             // "DATABASE()" era MySQL-específico — no Postgres, tabela e schema são
-             // conceitos diferentes; o schema padrão de uma conexão nova é "public".
              ResultSet resultSet = statement.executeQuery(
                      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")) {
 
@@ -75,7 +65,6 @@ class FlywayMigrationIT {
         flyway.migrate();
         MigrateResult segundaExecucao = flyway.migrate();
 
-        // Idempotente: nada novo para aplicar, mas não deve falhar.
         assertThat(segundaExecucao.success).isTrue();
         assertThat(segundaExecucao.migrationsExecuted).isZero();
     }

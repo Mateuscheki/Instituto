@@ -18,13 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Vínculo padrinho ↔ beneficiário. Um beneficiário tem um padrinho por vez
- * (campo {@code beneficiario.padrinho}); o histórico completo (quem foi
- * padrinho, de quando a quando) vive em {@code beneficiario_padrinho_historico}
- * e NUNCA é apagado — trocar de padrinho só encerra o período atual (fim =
- * hoje) e abre um novo, então relatórios antigos continuam corretos.
- */
 @Service
 @RequiredArgsConstructor
 public class ApadrinhamentoService {
@@ -35,7 +28,6 @@ public class ApadrinhamentoService {
     private final RetiradaCestaRepository retiradaCestaRepository;
     private final BeneficiosAuditoriaService auditoriaService;
 
-    /** VOLUNTARIO_NAO_E_PADRINHO (ALTA): só quem tem is_padrinho=true e está ativo pode ser vinculado. */
     public List<Aviso> avaliarVinculo(Long voluntarioId) {
         Voluntario voluntario = voluntarioRepository.findById(voluntarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Voluntário não encontrado: " + voluntarioId));

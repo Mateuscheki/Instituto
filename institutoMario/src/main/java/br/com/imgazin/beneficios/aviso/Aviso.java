@@ -2,11 +2,6 @@ package br.com.imgazin.beneficios.aviso;
 
 import br.com.imgazin.beneficios.domain.SeveridadeAviso;
 
-/**
- * Um aviso de confirmação levantado pelo motor de avisos (ver
- * {@link RegraAviso}). Nunca bloqueia o cadastro — só ALTA exige que o
- * operador marque "confirmo e autorizo" e justifique antes de prosseguir.
- */
 public class Aviso {
 
     private final String codigo;

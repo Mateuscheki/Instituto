@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-/** O relatório mais operacional: quem está apto e ainda não retirou no mês. */
 @Data
 @AllArgsConstructor
 public class PendenteDto {

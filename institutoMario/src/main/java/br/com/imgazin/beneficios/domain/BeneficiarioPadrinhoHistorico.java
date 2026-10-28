@@ -15,12 +15,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-/**
- * Um período de vínculo entre um beneficiário e um padrinho/madrinha.
- * Nunca é apagado nem editado: trocar de padrinho encerra este registro
- * ({@code fim = hoje}) e cria um novo — assim relatórios antigos continuam
- * corretos (ver CLAUDE.md do módulo, Etapa 4).
- */
 @Getter
 @Setter
 @Entity

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
-/** PADRINHO_DIVERGENTE (INFO): padrinho informado difere do vinculado ao cadastro. */
 @Component
 public class RegraPadrinhoDivergente implements RegraAvisoRetirada {
 

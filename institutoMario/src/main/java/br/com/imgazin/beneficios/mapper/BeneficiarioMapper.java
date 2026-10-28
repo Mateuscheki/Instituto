@@ -17,11 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Conversão Form <-> Entidade <-> DTO. Fica tudo aqui de propósito — nem
- * controller nem service fazem parsing de string de formulário na mão (ver
- * convenções do CLAUDE.md: "Entidade JPA nunca vai para a view").
- */
 @Component
 public class BeneficiarioMapper {
 
@@ -65,7 +60,6 @@ public class BeneficiarioMapper {
         return form;
     }
 
-    /** Aplica os dados do form na entidade (nova ou existente). Não mexe em status/ativo — decisão do service. */
     public void aplicarNaEntidade(BeneficiarioForm form, Beneficiario entidade, Voluntario padrinho) {
         entidade.setCpf(CpfUtils.normalizar(form.getCpf()));
         entidade.setNome(form.getNome().trim());
@@ -100,7 +94,6 @@ public class BeneficiarioMapper {
         entidade.setObservacao(blankToNull(form.getObservacao()));
     }
 
-    /** Cria/atualiza o endereço 1:1 e recalcula a chave de residência (regra de negócio #4 do módulo). */
     public void aplicarNoEndereco(BeneficiarioForm form, BeneficiarioEndereco endereco, Beneficiario beneficiario) {
         endereco.setBeneficiario(beneficiario);
         endereco.setEnderecoCompleto(blankToNull(form.getEnderecoCompleto()));
@@ -191,8 +184,6 @@ public class BeneficiarioMapper {
                 retirada.isCancelada()
         );
     }
-
-    // ---- helpers de parsing (tolerantes: já foram validados por BeneficiarioFormValidator antes de chegar aqui) ----
 
     private boolean isBlank(String valor) {
         return valor == null || valor.isBlank();

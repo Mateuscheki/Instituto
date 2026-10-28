@@ -12,10 +12,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Pessoa que colabora com o Instituto — entrega, eventos, triagem — podendo
- * também ser "padrinho/madrinha" de um ou mais beneficiários.
- */
 @Getter
 @Setter
 @Entity

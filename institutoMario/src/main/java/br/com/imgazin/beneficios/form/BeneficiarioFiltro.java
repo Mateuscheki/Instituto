@@ -2,7 +2,6 @@ package br.com.imgazin.beneficios.form;
 
 import lombok.Data;
 
-/** Filtros da listagem paginada de beneficiários (todos opcionais). */
 @Data
 public class BeneficiarioFiltro {
     private String nome;

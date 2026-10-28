@@ -18,7 +18,6 @@
     <span class="beneficios-badge-secao">CADASTRO E ATENDIMENTO</span>
     <h1 class="beneficios-titulo-secao h4 mb-3">Registrar retirada</h1>
 
-    <!-- Passo 1: buscar por CPF -->
     <div class="beneficios-card card mb-3">
         <div class="card-body">
             <form th:action="@{/beneficios/retiradas/registrar}" method="get" class="row g-2 align-items-end">
@@ -41,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Painel de elegibilidade -->
     <div th:if="${elegibilidade != null}" class="beneficios-card card mb-3">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
@@ -80,7 +78,6 @@
         </div>
     </div>
 
-    <!-- Passo 2: formulário da retirada (só aparece se o beneficiário existe) -->
     <form th:if="${retiradaForm != null}" th:action="@{/beneficios/retiradas/salvar}" th:object="${retiradaForm}" method="post" id="formRetirada">
         <input type="hidden" th:field="*{cpfBeneficiario}">
 
